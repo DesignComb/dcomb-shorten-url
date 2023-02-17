@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: deploy
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Update the API service
+        uses: appleboy/ssh-action@v0.0.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            cd /wkspace/google-sheet-middleware/ &&
+            sudo git remote set-url origin https://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@github.com/DesignComb/dcomb-shorten-url.git &&
+            sudo git pull &&
+#            sudo go clean &&
+#            sudo go build main.go &&
+#            sudo killall main &&
+#            sudo nohup ./main </dev/null &>/dev/null &
