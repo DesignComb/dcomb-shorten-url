@@ -1,0 +1,43 @@
+version: "3.5"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    working_dir: /usr/local/go/src/main
+    volumes:
+      - ./backend:/usr/local/go/src/main
+    ports:
+      - "8000:5000"
+    depends_on:
+      - db
+    entrypoint: go run main.go
+#    restart: always
+  db:
+    image: postgres:12.4-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=mysecretpassword
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    restart: always
+  web-app:
+    image: node:18-alpine
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    container_name: web-app
+#    command: [sh, -c, "yarn && yarn dev"]
+    ports:
+      - "3000:3000"
+#    working_dir: /webapp
+#    tty: true
+#    volumes:
+#      - ./frontend:/usr/src/nuxt-app
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+    depends_on:
+      - server

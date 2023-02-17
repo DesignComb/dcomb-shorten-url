@@ -1,0 +1,7 @@
+frontend/node_modules
+*.log*
+frontend/.nuxt
+frontend/.nitro
+frontend/.cache
+frontend/.output
+frontend/.env
