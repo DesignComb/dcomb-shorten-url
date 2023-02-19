@@ -1,3 +1,3 @@
 FROM        golang
-#ENV GOPROXY=https://proxy.inodes.org
+ENV GOPROXY=direct
 #RUN         go mod download
