@@ -31,13 +31,13 @@ services:
     container_name: web-app
 #    command: [sh, -c, "yarn && yarn dev"]
     ports:
-      - "3000:3000"
+      - "80:80"
 #    working_dir: /webapp
 #    tty: true
 #    volumes:
 #      - ./frontend:/usr/src/nuxt-app
     environment:
       HOST: 0.0.0.0
-      PORT: 3000
+      PORT: 80
     depends_on:
       - server
