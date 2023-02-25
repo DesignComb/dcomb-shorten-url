@@ -10,11 +10,11 @@ const { data, pending, error, refresh } = await useAsyncData(
 )
 
 const redirect = onMounted(() =>{
-  // console.log('aaa')
+  console.log('aaa')
   // console.log(data?.value?.origin)
-  if(isValidHttpUrl(data?.value?.origin)){
-    window.location = data?.value?.origin
-  }
+  // if(isValidHttpUrl(data?.value?.origin)){
+  //   window.location = data?.value?.origin
+  // }
 })
 </script>
 
