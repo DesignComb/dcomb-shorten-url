@@ -145,7 +145,8 @@ func SetupAndListen() {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: "http://172.19.0.1, http://54.249.0.5",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowHeaders: "Origin, Content-Type, Accept, Content-Length, Accept-Language, Accept-Encoding, Connection, Access-Control-Allow-Origin",
+        AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
 	}))
 
 	router.Use(logger.New())
