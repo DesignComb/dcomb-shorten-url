@@ -6,7 +6,7 @@ const {id} = route.params
 
 const { data, pending, error, refresh } = await useAsyncData(
     'id',
-    () => $fetch(`http://127.0.0.1:8000/r/${id}`)
+    () => $fetch(`http://172.19.0.3:8000/r/${id}`)
 )
 
 const redirect = onMounted(() =>{
