@@ -12,7 +12,7 @@ const isSuccess = ref(false)
 
 async function submit() {
   if(isValidHttpUrl(urlObj.origin)){
-    response.data = await $fetch('http://172.17.0.1:8000/urlShorten', {
+    response.data = await $fetch('http://54.249.0.5:8000/urlShorten', {
       method: 'POST',
       body: urlObj,
     })
