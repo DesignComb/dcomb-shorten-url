@@ -29,7 +29,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
           script: |
-            cd /wkspace/google-sheet-middleware/dcomb-shorten-url &&
             sudo git remote set-url origin https://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@github.com/DesignComb/dcomb-shorten-url.git &&
             sudo git pull &&
 #            sudo go clean &&
