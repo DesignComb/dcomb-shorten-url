@@ -144,7 +144,7 @@ func SetupAndListen() {
 	router := fiber.New()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: "http://172.19.0.1",
+		AllowOrigins: "http://172.19.0.1, http://54.249.0.5",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
