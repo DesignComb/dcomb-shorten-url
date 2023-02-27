@@ -1,6 +1,16 @@
 version: "3.5"
 
 services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+#    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl/
   server:
     build:
       context: .
@@ -13,7 +23,6 @@ services:
     depends_on:
       - db
     entrypoint: go run main.go
-#    restart: always
   db:
     image: postgres:12.4-alpine
     ports:
@@ -22,7 +31,6 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=mysecretpassword
       - PGDATA=/var/lib/postgresql/data/pgdata
-    restart: always
   web-app:
     image: node:18-alpine
     build:
@@ -31,7 +39,7 @@ services:
     container_name: web-app
 #    command: [sh, -c, "yarn && yarn dev"]
     ports:
-      - "80:80"
+      - "8001:80"
 #    working_dir: /webapp
 #    tty: true
 #    volumes:
