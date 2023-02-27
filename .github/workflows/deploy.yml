@@ -33,7 +33,7 @@ jobs:
             sudo git remote set-url origin https://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@github.com/DesignComb/dcomb-shorten-url.git &&
             sudo git pull &&
             sudo docker-compose build &&
-            sudo docker-compose up -d &&
+            sudo docker-compose restart &&
 #            sudo go clean &&
 #            sudo go build main.go &&
 #            sudo killall main &&
