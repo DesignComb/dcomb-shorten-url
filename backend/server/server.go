@@ -154,11 +154,11 @@ func SetupAndListen() {
 		Format: "[${ip}]:${port} ${status} - ${method} ${path}\n",
 	}))
 
-	router.Get("/r/:redirect", redirect)
+	router.Get("/api/r/:redirect", redirect)
 
 	//router.Get("/urlShorten", getAllUrlShorten)
-	router.Get("/urlShorten/:id", getUrlShorten)
-	router.Post("/urlShorten", createUrlShorten)
+	router.Get("/api/urlShorten/:id", getUrlShorten)
+	router.Post("/api/urlShorten", createUrlShorten)
 	//router.Patch("/urlShorten", updateUrlShorten)
 	//router.Delete("/urlShorten/:id", deleteUrlShorten)
 

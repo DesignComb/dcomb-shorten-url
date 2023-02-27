@@ -13,8 +13,9 @@ services:
       - ./ssl:/etc/nginx/ssl/
 #      - ./ssl:/etc/ssl/ssl2/
     depends_on:
-      - web-app
-  server:
+      - frontend
+      - backend
+  backend:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
@@ -34,12 +35,12 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=mysecretpassword
       - PGDATA=/var/lib/postgresql/data/pgdata
-  web-app:
+  frontend:
     image: node:18-alpine
     build:
       context: .
       dockerfile: ./frontend/Dockerfile
-    container_name: web-app
+    container_name: frontend
 #    command: [sh, -c, "yarn && yarn dev"]
     ports:
       - "8001:80"
@@ -51,4 +52,4 @@ services:
       HOST: 0.0.0.0
       PORT: 80
     depends_on:
-      - server
+      - backend
