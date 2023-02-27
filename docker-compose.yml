@@ -13,18 +13,18 @@ services:
 #      - ./ssl:/etc/nginx/ssl/
 #    depends_on:
 #      - web-app
-#  server:
-#    build:
-#      context: .
-#      dockerfile: ./backend/Dockerfile
-#    working_dir: /usr/local/go/src/main
-#    volumes:
-#      - ./backend:/usr/local/go/src/main
-#    ports:
-#      - "8000:5000"
-#    depends_on:
-#      - db
-#    entrypoint: go run main.go
+  server:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    working_dir: /usr/local/go/src/main
+    volumes:
+      - ./backend:/usr/local/go/src/main
+    ports:
+      - "8000:5000"
+    depends_on:
+      - db
+    entrypoint: go run main.go
   db:
     image: postgres:12.4-alpine
     ports:
@@ -49,5 +49,5 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 80
-#    depends_on:
-#      - server
+    depends_on:
+      - server
