@@ -15,22 +15,22 @@ onMounted(() => {
   redirect()
 })
 
+const handleRefresh = async () => {
+  console.log(data)
+  await refresh()
+  await redirect()
+}
+
 const redirect = () => {
   const value = (data as { value?: { origin: string } }).value
+  console.log(value)
   if (value && isValidHttpUrl(value.origin)) {
     const url = new URL(value.origin)
     window.location.href = url.href
   }
 }
 
-const handleRefresh = async () => {
-  await refresh()
-  if (error) {
-    console.log('Failed to fetch data.')
-  } else {
-    redirect()
-  }
-}
+
 </script>
 <template>
   <Head>
