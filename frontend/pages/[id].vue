@@ -8,7 +8,7 @@ const { appBaseUrl,apiBaseUrl } = useRuntimeConfig().public
 
 const {data, pending, error, refresh} = await useAsyncData(
     'id',
-    () => $fetch(`${apiBaseUrl}/api/r/${id}`)
+    () => $fetch(`http://172.17.0.1/api/r/${id}`)
 )
 
 onMounted(() => {
