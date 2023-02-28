@@ -3,6 +3,13 @@ export default defineNuxtConfig({
     modules: [
         '@nuxt/image-edge',
     ],
+    runtimeConfig: { // auto get .env setting
+        public: {
+            appBaseUrl: '',
+            apiBaseUrl: '',
+            serverApiBaseUrl: ''
+        }
+    },
     image: {
         imgix: {
             baseURL: 'https://assets.imgix.net'
