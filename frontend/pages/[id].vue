@@ -40,7 +40,7 @@ const handleRefresh = async () => {
   <div class="flex justify-center items-center h-screen">
     <div class="text-center mb-4">
       <loading-animation/>
-      <div v-if="error"> 錯誤: {{ error }}
+      <div v-if="error"> 錯誤: {{ error }}<br>
         <button
             class="rounded-sm bg-blue-500 py-3 px-8 text-xl font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             @click="handleRefresh"

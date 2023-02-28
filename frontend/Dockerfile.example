@@ -49,7 +49,9 @@ RUN npm run build
 
 #ENV NUXT_HOST=0.0.0.0
 #ENV NUXT_PORT=3000
-
+ENV NUXT_PUBLIC_APP_BASE_URL=https://dco.tw
+ENV NUXT_PUBLIC_API_BASE_URL=https://dco.tw
+ENV NUXT_PUBLIC_SERVER_API_BASE_URL=https://dco.tw
 #EXPOSE 3000
 
 ENTRYPOINT ["node", ".output/server/index.mjs"]
