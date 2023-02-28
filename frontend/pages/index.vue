@@ -22,7 +22,7 @@ const isSuccess = ref(false)
 
 async function submit() {
   if(isValidHttpUrl(urlObj.origin)){
-    response.data = await $fetch(`${apiBaseUrl}/urlShorten`, {
+    response.data = await $fetch(`${apiBaseUrl}/api/urlShorten`, {
       method: 'POST',
       body: urlObj,
     })
