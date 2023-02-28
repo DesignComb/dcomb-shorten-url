@@ -8,7 +8,7 @@ const { appBaseUrl,apiBaseUrl } = useRuntimeConfig().public
 
 const {data, pending, error, refresh} = await useAsyncData(
     'id',
-    () => $fetch(`https://dco.tw/api/r/${id}`)
+    () => $fetch(`http://172.17.0.1:8000/api/r/${id}`)
 )
 
 onMounted(() => {
