@@ -34,8 +34,8 @@ const handleRefresh = async () => {
 </script>
 <template>
   <Head>
-    <Title>{{ data.origin }}</Title>
-    <Meta name="description" :content="data.origin"/>
+    <Title>{{ data?.origin }}</Title>
+    <Meta name="description" :content="data?.origin"/>
   </Head>
   <div class="flex justify-center items-center h-screen">
     <div class="text-center mb-4">

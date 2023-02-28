@@ -64,6 +64,7 @@ const clickToCopy = () => {
 
 <template>
   <div class="mx-auto max-w-sm flex flex-wrap h-screen content-center items-center">
+    {{apiBaseUrl}}//{{appBaseUrl}}
     <form class="w-full max-w-sm">
       <div class="flex items-center border-b border-teal-500 py-2">
         <input
