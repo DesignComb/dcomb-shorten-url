@@ -4,11 +4,11 @@ import LoadingAnimation from "~/components/common/loadingAnimation.vue";
 
 const route = useRoute()
 const {id} = route.params
-const { appBaseUrl,apiBaseUrl } = useRuntimeConfig().public
+const { appBaseUrl,apiBaseUrl,serverApiBaseUrl } = useRuntimeConfig().public
 
 const {data, pending, error, refresh} = await useAsyncData(
     'id',
-    () => $fetch(`http://172.17.0.1:8000/api/r/${id}`)
+    () => $fetch(`${serverApiBaseUrl}/api/r/${id}`)
 )
 
 onMounted(() => {

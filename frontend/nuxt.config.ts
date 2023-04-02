@@ -24,5 +24,23 @@ export default defineNuxtConfig({
     },
     build: {
         transpile: ['@headlessui/vue']
+    },
+    routeRules: {
+        // // Static page generated on-demand, revalidates in background
+        // '/blog/**': { swr: true },
+        // // Static page generated on-demand once
+        // '/articles/**': { static: true },
+        // // Set custom headers matching paths
+        // '/_nuxt/**': { headers: { 'cache-control': 's-maxage=0' } },
+        // // Render these routes with SPA
+        // '/admin/**': { ssr: false },
+        // // Add cors headers
+        // '/api/v1/**': { cors: true },
+        // // Add redirect headers
+        // '/old-page': { redirect: '/new-page' },
+
+        // set ssr false on enter url page
+        '/': { ssr: false }
     }
+
 })

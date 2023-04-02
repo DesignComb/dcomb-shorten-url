@@ -2,61 +2,63 @@
 import {ref, reactive, computed} from 'vue'
 import 'boxicons/css/boxicons.min.css'
 import {isValidHttpUrl} from '~/utils/verify'
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import {Disclosure, DisclosureButton, DisclosurePanel} from '@headlessui/vue'
 import QrController from "~/components/qrCode/qrController.vue";
 import LoadingAnimation from "~/components/common/loadingAnimation.vue";
 
-import { getLinkPreview, getPreviewFromContent } from "link-preview-js";
+import {getLinkPreview, getPreviewFromContent} from "link-preview-js";
 
-const { appBaseUrl,apiBaseUrl } = useRuntimeConfig().public
-import { Response } from 'node-fetch';
+const {appBaseUrl, apiBaseUrl} = useRuntimeConfig().public
+import {Response} from 'node-fetch';
 
 
 const urlObj = reactive({
-  origin:'',
-  isRandom:true,
-  meta:{}
+  origin: '',
+  isRandom: true,
+  meta: {}
 })
-const response: any = reactive({data: { short: '' }})
+const response: any = reactive({data: {short: ''}})
 const isSuccess = ref(false)
 
 async function submit() {
-  if(isValidHttpUrl(urlObj.origin)){
+  if (isValidHttpUrl(urlObj.origin)) {
     response.data = await $fetch(`${apiBaseUrl}/api/urlShorten`, {
       method: 'POST',
       body: urlObj,
     })
-    if(response.data.short !== ''){
+    if (response.data.short !== '') {
       isSuccess.value = true
-      // 獲取原始網址的 meta 資料
-      const metaResponse = await useFetch(urlObj.origin)
-      const metaText = await metaResponse?.text()
-      const parser = new DOMParser()
-      const htmlDocument = parser.parseFromString(metaText, 'text/html')
-      const metaTags = htmlDocument.getElementsByTagName('meta')
-      // 從 meta 資料中獲取需要顯示的屬性
-      const title = htmlDocument.querySelector('title')?.textContent
-      const description = Array.from(metaTags).find(tag => tag.getAttribute('name') === 'description')?.getAttribute('content')
-      const imageUrl = Array.from(metaTags).find(tag => tag.getAttribute('property') === 'og:image')?.getAttribute('content')
-      urlObj.meta = {
-        title,
-        description,
-        imageUrl,
-      }
+      // // 獲取原始網址的 meta 資料
+      // const metaResponse = await useFetch(urlObj.origin)
+      // const metaText = await metaResponse?.text()
+      // const parser = new DOMParser()
+      // const htmlDocument = parser.parseFromString(metaText, 'text/html')
+      // const metaTags = htmlDocument.getElementsByTagName('meta')
+      // // 從 meta 資料中獲取需要顯示的屬性
+      // const title = htmlDocument.querySelector('title')?.textContent
+      // const description = Array.from(metaTags).find(tag => tag.getAttribute('name') === 'description')?.getAttribute('content')
+      // const imageUrl = Array.from(metaTags).find(tag => tag.getAttribute('property') === 'og:image')?.getAttribute('content')
+      // urlObj.meta = {
+      //   title,
+      //   description,
+      //   imageUrl,
+      // }
     }
-  }
-  else {
+  } else {
     alert('請填入正確的URL')
   }
 }
 
-const completeUrl = computed(() => `${appBaseUrl}/${response.data.short}`)
+const protocol = window.location.protocol;
+const currentHost = window.location.host;
+const completeUrl = computed(() => `${protocol}//${currentHost}/${response.data.short}`)
+
 
 const isCopied = ref(false)
 
 const clickToCopy = () => {
   navigator.clipboard.writeText(completeUrl.value)
-      .then(()=>{
+      .then(() => {
         isCopied.value = true
       })
 }
@@ -83,7 +85,8 @@ const clickToCopy = () => {
       <input class="flex w-full mt-1.5 px-4 py-1.5 text-black rounded"
              ref="shortUrl"
              v-model="completeUrl" disabled/>
-      <span @click="clickToCopy" class="absolute w-8 h-8 z-10 -top-1 right-0 flex justify-center items-center cursor-pointer">
+      <span @click="clickToCopy"
+            class="absolute w-8 h-8 z-10 -top-1 right-0 flex justify-center items-center cursor-pointer">
         <i v-if="!isCopied" class='bx bx-copy'></i>
         <i v-else class='bx bx-check'></i>
       </span>
@@ -117,17 +120,17 @@ const clickToCopy = () => {
     </div>
   </div>
   <!-- 顯示原始網址和 meta 資料 -->
-  <div v-if="urlObj.meta" class="mt-4">
-    <div>{{ urlObj.origin }}</div>
-    <div v-if="urlObj.meta.title">{{ urlObj.meta.title }}</div>
-    <div v-if="urlObj.meta.description">{{ urlObj.meta.description }}</div>
-    <img v-if="urlObj.meta.imageUrl" :src="urlObj.meta.imageUrl" alt="">
-  </div>
+  <!--  <div v-if="urlObj.meta" class="mt-4">-->
+  <!--    <div>{{ urlObj.origin }}</div>-->
+  <!--    <div v-if="urlObj.meta.title">{{ urlObj.meta.title }}</div>-->
+  <!--    <div v-if="urlObj.meta.description">{{ urlObj.meta.description }}</div>-->
+  <!--    <img v-if="urlObj.meta.imageUrl" :src="urlObj.meta.imageUrl" alt="">-->
+  <!--  </div>-->
 </template>
 
 
 <style scoped>
-:disabled{
+:disabled {
   background-color: white;
 }
 </style>

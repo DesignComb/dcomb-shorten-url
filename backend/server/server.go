@@ -138,12 +138,11 @@ func SetupAndListen() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://172.19.0.1", "http://54.249.0.5", "http://54.249.0.5", "https://dco.tw"},
+		AllowOrigins: []string{"http://172.19.0.1", "http://54.249.0.5", "http://54.249.0.5", "https://dco.tw", "http://localhost:8001"},
 		AllowHeaders: []string{"Origin", "Content-Type", "Accept", "Content-Length", "Accept-Language", "Accept-Encoding", "Connection", "Access-Control-Allow-Origin"},
 		AllowMethods: []string{"GET", "POST", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS"},
 	}))
-
-
+	
 	router.GET("/api/r/:redirect", redirect)
 
 	//router.Get("/urlShorten", getAllUrlShorten)
