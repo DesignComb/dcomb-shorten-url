@@ -1,3 +1,5 @@
 .env
 frontend/node_modules
 frontend/.nuxt
+frontend/Dockerfile
+/backend/gin-bin
