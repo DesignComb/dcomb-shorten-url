@@ -34,7 +34,7 @@ func getAllUrlShorten(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error getting all goly links " + err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data:": urls})
+	c.JSON(http.StatusOK, urls)
 }
 
 func getUrlShorten(c *gin.Context) {
@@ -49,7 +49,7 @@ func getUrlShorten(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error could not retrieve url from db " + err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data:": url})
+	c.JSON(http.StatusOK, url)
 }
 
 func createUrlShorten(c *gin.Context) {
@@ -88,7 +88,7 @@ func createUrlShorten(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data:": urlShorten})
+	c.JSON(http.StatusOK, urlShorten)
 }
 
 func updateUrlShorten(c *gin.Context) {
@@ -114,7 +114,7 @@ func updateUrlShorten(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data:": urlShorten})
+	c.JSON(http.StatusOK, urlShorten)
 }
 
 func deleteUrlShorten(c *gin.Context) {
