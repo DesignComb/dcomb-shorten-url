@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"main/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,9 +18,12 @@ type UrlShorten struct {
 	Random  bool   `json:"isRandom"`
 }
 
-
 func Setup() {
-	dsn := "host=db user=user password=mysecretpassword dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	dsn := "host=" + config.Val.DbHost +
+		" user=" + config.Val.DbUser +
+		" password=" + config.Val.DbPwd +
+		" dbname=" + config.Val.DbName +
+		" port=5432 sslmode=disable TimeZone=Asia/Taipei"
 	var err error
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

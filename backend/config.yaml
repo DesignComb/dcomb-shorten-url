@@ -1,0 +1,10 @@
+MODE: "debug"
+Port: 5000
+DbHost: db
+DbUser: user
+DbPwd: mysecretpassword
+DbName: postgres
+
+
+#Port: 3001
+#DbHost: localhost
