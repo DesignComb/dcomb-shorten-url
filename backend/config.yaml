@@ -5,6 +5,8 @@ DbUser: user
 DbPwd: mysecretpassword
 DbName: postgres
 
+GoogleClientID:
+GoogleSecretKey:
 
 #Port: 3001
 #DbHost: localhost

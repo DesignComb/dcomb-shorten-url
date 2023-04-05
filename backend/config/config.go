@@ -10,10 +10,14 @@ var Val Config
 type Config struct {
 	Mode string `structure:"MODE"`
 	Port string `structure:"PORT"`
+
 	DbHost string `structure:"DB_HOST"`
 	DbUser string `structure:"DB_USER"`
 	DbPwd string `structure:"DB_PWD"`
 	DbName string `structure:"DB_NAME"`
+
+	GoogleSecretKey string `structure:"GOOGLE_SECRET_KEY"`
+	GoogleClientID  string `structure:"GOOGLE_CLIENT_ID"`
 }
 
 func Init() {

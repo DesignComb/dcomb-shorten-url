@@ -20,13 +20,20 @@ func SetupAndListen() {
 		AllowMethods: []string{"GET", "POST", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS"},
 	}))
 
-	// short url
-	router.GET("/api/r/:redirect", redirect)
-	//router.Get("/urlShorten", getAllUrlShorten)
-	router.GET("/api/urlShorten/:id", getUrlShorten)
-	router.POST("/api/urlShorten", createUrlShorten)
-	//router.Patch("/urlShorten", updateUrlShorten)
-	//router.Delete("/urlShorten/:id", deleteUrlShorten)
+	api := router.Group("/api")
+	{
+		// short url
+		api.GET("/r/:redirect", redirect)
+		//api.Get("/urlShorten", getAllUrlShorten)
+		api.GET("/urlShorten/:id", getUrlShorten)
+		api.POST("/urlShorten", createUrlShorten)
+		//api.Patch("/urlShorten", updateUrlShorten)
+		//api.Delete("/urlShorten/:id", deleteUrlShorten)
+
+		// google login
+		api.GET("ouath/google/url", access)
+		api.GET("ouath/google/login", login)
+	}
 
 	// google login
 	//router.POST("/api/google/login", login)
