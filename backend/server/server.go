@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"main/config"
+	"main/middleware"
 )
 
 func SetupAndListen() {
@@ -21,19 +22,21 @@ func SetupAndListen() {
 	}))
 
 	api := router.Group("/api")
-	{
-		// short url
-		api.GET("/r/:redirect", redirect)
-		//api.Get("/urlShorten", getAllUrlShorten)
-		api.GET("/urlShorten/:id", getUrlShorten)
-		api.POST("/urlShorten", createUrlShorten)
-		//api.Patch("/urlShorten", updateUrlShorten)
-		//api.Delete("/urlShorten/:id", deleteUrlShorten)
 
-		// google login
-		api.GET("ouath/google/url", access)
-		api.GET("ouath/google/login", login)
-	}
+	// short url
+	api.GET("/r/:redirect", redirect)
+	//api.Get("/urlShorten", getAllUrlShorten)
+
+	urlShortenApi := api.Use(middleware.Auth())
+	urlShortenApi.GET("/urlShorten/:id", getUrlShorten)
+	urlShortenApi.POST("/urlShorten", createUrlShorten)
+	//api.Patch("/urlShorten", updateUrlShorten)
+	//api.Delete("/urlShorten/:id", deleteUrlShorten)
+
+	// google login
+	api.GET("ouath/google/url", access)
+	api.GET("ouath/google/login", login)
+
 
 	// google login
 	//router.POST("/api/google/login", login)
