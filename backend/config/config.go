@@ -18,6 +18,9 @@ type Config struct {
 
 	GoogleSecretKey string `structure:"GOOGLE_SECRET_KEY"`
 	GoogleClientID  string `structure:"GOOGLE_CLIENT_ID"`
+
+	JWTTokenLife  int `structure:"JWT_TOKEN_LIFE"`
+	JWTSecret  string `structure:"JWT_TOKEN_LIFE"`
 }
 
 func Init() {

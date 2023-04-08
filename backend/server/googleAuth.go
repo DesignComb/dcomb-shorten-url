@@ -7,6 +7,7 @@ import (
 	"github.com/tidwall/gjson"
 	"io/ioutil"
 	"main/config"
+	jwt "main/pkg/jwt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -44,6 +45,20 @@ func login(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/")
 		return
 	}
+
+	// create jwt token
+	jwtToken, err := jwt.GenerateToken(id, name)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Debug("GenerateToken error")
+
+		c.Redirect(http.StatusFound, "/")
+		return
+	}
+
+	// 測試domain先寫localhost secure先寫false
+	c.SetCookie(jwt.Key, jwtToken, config.Val.JWTTokenLife, "/", "localhost", false, true)
 
 	log.Infof("id: %v, name: %v", id, name)
 }
