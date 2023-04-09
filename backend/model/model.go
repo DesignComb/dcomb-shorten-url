@@ -16,6 +16,15 @@ type UrlShorten struct {
 	Short   string `json:"short" gorm:"unique;not null"`
 	Clicked uint64 `json:"clickedNum"`
 	Random  bool   `json:"isRandom"`
+	UserId  uint64 `json:"userId"`
+}
+
+type User struct {
+	ID                uint64 `json:"id" gorm:"primaryKey"`
+	GoogleUserId      string `json:"googleUserId" gorm:"unique;not null"`
+	GoogleUserEmail   string `json:"googleUserEmail" gorm:"unique;not null"`
+	GoogleUserName    string `json:"googleUserName" gorm:"not null"`
+	GoogleUserPicture string `json:"googleUserPicture"`
 }
 
 func Setup() {
@@ -30,7 +39,7 @@ func Setup() {
 		panic(err)
 	}
 
-	err = db.AutoMigrate(&UrlShorten{})
+	err = db.AutoMigrate(&UrlShorten{},&User{})
 	if err != nil {
 		fmt.Println(err)
 	}
