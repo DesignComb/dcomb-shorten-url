@@ -20,9 +20,9 @@ func access(c *gin.Context) {
 }
 
 func oauthURL() string {
-	u := "https://accounts.google.com/o/oauth2/v2/auth?client_id=%s&response_type=code&scope=%s&redirect_uri=%s"
+	u := "https://accounts.google.com/o/oauth2/v2/auth?client_id=%s&response_type=code&scope=%s %s&redirect_uri=%s"
 
-	return fmt.Sprintf(u, config.Val.GoogleClientID, "https://www.googleapis.com/auth/userinfo.profile", "http://localhost:8000/api/ouath/google/login")
+	return fmt.Sprintf(u, config.Val.GoogleClientID, "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "http://localhost:8000/api/ouath/google/login")
 }
 
 func login(c *gin.Context) {
@@ -37,7 +37,7 @@ func login(c *gin.Context) {
 		return
 	}
 
-	id, name, err := getGoogleUserInfo(token)
+	id, email, name, picture, err := getGoogleUserInfo(token)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err,
@@ -47,7 +47,7 @@ func login(c *gin.Context) {
 	}
 
 	// create jwt token
-	jwtToken, err := jwt.GenerateToken(id, name)
+	jwtToken, err := jwt.GenerateToken(id, email, name, picture)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err,
@@ -91,21 +91,24 @@ func accessToken(code string) (token string, err error) {
 	return token, nil
 }
 
-func getGoogleUserInfo(token string) (id, name string, err error) {
-	u := fmt.Sprintf("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=%s", token)
+func getGoogleUserInfo(token string) (id, email, name, picture string, err error) {
+	u := fmt.Sprintf("https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=%s", token)
 	resp, err := http.Get(u)
 	if err != nil {
-		return id, name, err
+		return id, email, name, picture, err
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return id, name, err
+		return id, email, name, picture, err
 	}
 
-	name = gjson.GetBytes(body, "name").String()
+	print("body" + string(body))
 	id = gjson.GetBytes(body, "id").String()
+	email = gjson.GetBytes(body, "email").String()
+	name = gjson.GetBytes(body, "name").String()
+	picture = gjson.GetBytes(body, "picture").String()
 
-	return id, name, nil
+	return id, email, name, picture, nil
 }
