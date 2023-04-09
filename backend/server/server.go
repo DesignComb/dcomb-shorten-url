@@ -23,19 +23,22 @@ func SetupAndListen() {
 
 	api := router.Group("/api")
 
+	// google login
+	api.GET("ouath/google/url", access)
+	api.GET("ouath/google/login", login)
+
 	// short url
 	api.GET("/r/:redirect", redirect)
 	//api.Get("/urlShorten", getAllUrlShorten)
+
+	userApi := api.Use(middleware.Auth())
+	userApi.GET("/user/info", GetUserInfo)
 
 	urlShortenApi := api.Use(middleware.Auth())
 	urlShortenApi.GET("/urlShorten/:id", getUrlShorten)
 	urlShortenApi.POST("/urlShorten", createUrlShorten)
 	//api.Patch("/urlShorten", updateUrlShorten)
 	//api.Delete("/urlShorten/:id", deleteUrlShorten)
-
-	// google login
-	api.GET("ouath/google/url", access)
-	api.GET("ouath/google/login", login)
 
 
 	// google login
