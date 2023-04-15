@@ -7,6 +7,7 @@ import (
 	"github.com/tidwall/gjson"
 	"io/ioutil"
 	"main/config"
+	"main/model"
 	jwt "main/pkg/jwt"
 	"net/http"
 	"net/url"
@@ -60,7 +61,21 @@ func login(c *gin.Context) {
 	// 測試domain先寫localhost secure先寫false
 	c.SetCookie(jwt.Key, jwtToken, config.Val.JWTTokenLife, "/", "localhost", false, true)
 
-	log.Infof("id: %v, name: %v", id, name)
+	// 不是使用者，new user
+	user, _ := model.GetUser(id)
+	if(user == model.User{}){
+		var user model.User
+		user.GoogleUserId = id
+		user.GoogleUserEmail = email
+		user.GoogleUserName = name
+		user.GoogleUserPicture = picture
+		user, err := model.CreateUser(user)
+		if err != nil {
+			panic(err)
+		}
+		log.Infof("userid: %v created", user.ID)
+	}
+	log.Infof("userid: %v logged in", user.ID)
 }
 
 func accessToken(code string) (token string, err error) {
@@ -104,7 +119,6 @@ func getGoogleUserInfo(token string) (id, email, name, picture string, err error
 		return id, email, name, picture, err
 	}
 
-	print("body" + string(body))
 	id = gjson.GetBytes(body, "id").String()
 	email = gjson.GetBytes(body, "email").String()
 	name = gjson.GetBytes(body, "name").String()

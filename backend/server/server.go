@@ -31,6 +31,7 @@ func SetupAndListen() {
 	api.GET("/r/:redirect", redirect)
 	//api.Get("/urlShorten", getAllUrlShorten)
 
+	// user
 	userApi := api.Use(middleware.Auth())
 	userApi.GET("/user/info", GetUserInfo)
 

@@ -29,13 +29,11 @@ func CreateUrlShorten(urlShorten UrlShorten) (UrlShorten, error) {
 }
 
 func UpdateUrlShorten(urlShorten UrlShorten) error {
-
 	tx := db.Save(&urlShorten)
 	return tx.Error
 }
 
 func DeleteUrlShorten(id uint64) error {
-
 	tx := db.Unscoped().Delete(&UrlShorten{}, id)
 	return tx.Error
 }
