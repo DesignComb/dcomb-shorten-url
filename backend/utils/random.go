@@ -1,15 +1,18 @@
 package utils
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
-var runes = []rune("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+func RandomURL(n int) string {
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	rand.Seed(time.Now().UnixNano())
 
-func RandomURL(size int) string {
-	str := make([]rune, size)
-
-	for i := range str {
-		str[i] = runes[rand.Intn(len(runes))]
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 
-	return string(str)
+	return string(b)
 }
