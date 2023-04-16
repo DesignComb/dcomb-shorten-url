@@ -11,6 +11,7 @@ import (
 	jwt "main/pkg/jwt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -38,7 +39,7 @@ func login(c *gin.Context) {
 		return
 	}
 
-	id, email, name, picture, err := getGoogleUserInfo(token)
+	googleUserId, email, name, picture, err := getGoogleUserInfo(token)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err,
@@ -47,8 +48,24 @@ func login(c *gin.Context) {
 		return
 	}
 
+	// 不是使用者，new user
+	user, _ := model.GetUser(googleUserId)
+	if(user == model.User{}){
+		var user model.User
+		user.GoogleUserId = googleUserId
+		user.GoogleUserEmail = email
+		user.GoogleUserName = name
+		user.GoogleUserPicture = picture
+		user, err = model.CreateUser(user)
+		if err != nil {
+			panic(err)
+		}
+		log.Infof("userid: %v created", user.ID)
+	}
+	user, _ = model.GetUser(googleUserId)
+
 	// create jwt token
-	jwtToken, err := jwt.GenerateToken(id, email, name, picture)
+	jwtToken, err := jwt.GenerateToken(strconv.FormatUint(user.ID, 10), googleUserId, email, name, picture)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err,
@@ -61,20 +78,6 @@ func login(c *gin.Context) {
 	// 測試domain先寫localhost secure先寫false
 	c.SetCookie(jwt.Key, jwtToken, config.Val.JWTTokenLife, "/", "localhost", false, true)
 
-	// 不是使用者，new user
-	user, _ := model.GetUser(id)
-	if(user == model.User{}){
-		var user model.User
-		user.GoogleUserId = id
-		user.GoogleUserEmail = email
-		user.GoogleUserName = name
-		user.GoogleUserPicture = picture
-		user, err := model.CreateUser(user)
-		if err != nil {
-			panic(err)
-		}
-		log.Infof("userid: %v created", user.ID)
-	}
 	log.Infof("userid: %v logged in", user.ID)
 }
 
@@ -106,23 +109,23 @@ func accessToken(code string) (token string, err error) {
 	return token, nil
 }
 
-func getGoogleUserInfo(token string) (id, email, name, picture string, err error) {
+func getGoogleUserInfo(token string) (googleUserId, email, name, picture string, err error) {
 	u := fmt.Sprintf("https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=%s", token)
 	resp, err := http.Get(u)
 	if err != nil {
-		return id, email, name, picture, err
+		return googleUserId, email, name, picture, err
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return id, email, name, picture, err
+		return googleUserId, email, name, picture, err
 	}
 
-	id = gjson.GetBytes(body, "id").String()
+	googleUserId = gjson.GetBytes(body, "id").String()
 	email = gjson.GetBytes(body, "email").String()
 	name = gjson.GetBytes(body, "name").String()
 	picture = gjson.GetBytes(body, "picture").String()
 
-	return id, email, name, picture, nil
+	return googleUserId, email, name, picture, nil
 }

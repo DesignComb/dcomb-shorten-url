@@ -12,20 +12,22 @@ const Key = "token"
 
 // Claims Token的結構，裡面放你要的資訊
 type Claims struct {
-	Id      string `json:"id"`
-	Email   string `json:"email"`
-	Name    string `json:"name"`
-	Picture string `json:"picture"`
+	UserId       string `json:"user_id"`
+	GoogleUserId string `json:"google_user_id"`
+	Email        string `json:"email"`
+	Name         string `json:"name"`
+	Picture      string `json:"picture"`
 	jwt.StandardClaims
 }
 
 // GenerateToken 產生Token
-func GenerateToken(id, email, name, picture string) (string, error) {
+func GenerateToken(userId, googleUserId, email, name, picture string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(time.Duration(config.Val.JWTTokenLife) * time.Second) // Token有效時間
 
 	claims := Claims{
-		id,
+		userId,
+		googleUserId,
 		email,
 		name,
 		picture,
@@ -42,19 +44,19 @@ func GenerateToken(id, email, name, picture string) (string, error) {
 }
 
 // ParseToken 驗證Token對不對，如果對就回傳user info
-func ParseToken(token string) (id, email, name, picture string, err error) {
+func ParseToken(token string) (userId, googleUserId, email, name, picture string, err error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(config.Val.JWTSecret), nil
 	})
 
 	if err != nil {
-		return "", "","", "", err
+		return "", "", "", "", "", err
 	}
 
 	claims, ok := tokenClaims.Claims.(*Claims)
 	if !ok || !tokenClaims.Valid {
-		return "", "","", "", errors.New("tokenClaims invalid")
+		return "", "", "", "", "", errors.New("tokenClaims invalid")
 	}
 
-	return claims.Id, claims.Email, claims.Name, claims.Picture, nil
+	return claims.UserId, claims.GoogleUserId, claims.Email, claims.Name, claims.Picture, nil
 }
