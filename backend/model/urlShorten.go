@@ -23,10 +23,9 @@ func GetUrlShorten(id uint64) (UrlShorten, error) {
 	return urlShorten, nil
 }
 
-func GetUrlShortenFromOrigin(origin string) ([]UrlShorten) {
+func GetUrlShortenFromOrigin(origin string, userId uint64) []UrlShorten {
 	var urlShorten []UrlShorten
-	db.Where("origin = ?", origin).Find(&urlShorten)
-
+	db.Where("origin = ?", origin).Where(db.Where("user_id is NULL").Or("user_id = ?", userId)).Find(&urlShorten)
 	return urlShorten
 }
 

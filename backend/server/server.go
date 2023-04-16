@@ -43,7 +43,7 @@ func SetupAndListen() {
 	// user short url
 	userUrlShortenApi := api.Use(middleware.Auth())
 	userUrlShortenApi.POST("/user/:userId/urlShorten", createUrlShorten)
-
+	userUrlShortenApi.GET("/user/:userId/urlShorten/origin", getUserUrlShortenFromOrigin)
 
 	// google login
 	//router.POST("/api/google/login", login)

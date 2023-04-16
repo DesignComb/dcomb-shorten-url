@@ -56,7 +56,38 @@ func getUrlShortenFromOrigin(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusOK, gin.H{"message": "origin is empty."})
 		return
 	}
-	url := model.GetUrlShortenFromOrigin(origin)
+	url := model.GetUrlShortenFromOrigin(origin, 0)
+	c.JSON(http.StatusOK, url)
+}
+
+func getUserUrlShortenFromOrigin(c *gin.Context) {
+	origin := c.Query("origin")
+	if !(len(origin) > 0) {
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"message": "origin is empty."})
+		return
+	}
+
+	userId := c.Param("userId")
+	var loginUserId uint64
+	if len(userId) > 0 {
+		value, exists := c.Get("user_id")
+		if value != userId {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"result":     false,
+				"error_code": http.StatusUnauthorized,
+			})
+			c.Abort()
+			return
+		}
+		if exists {
+			str, ok := value.(string)
+			if ok {
+				loginUserId, _  = strconv.ParseUint(str, 10, 64)
+			}
+		}
+	}
+	url := model.GetUrlShortenFromOrigin(origin, loginUserId)
+
 	c.JSON(http.StatusOK, url)
 }
 
