@@ -11,12 +11,15 @@ import (
 var db *gorm.DB
 
 type UrlShorten struct {
-	ID      uint64 `json:"id" gorm:"primaryKey"`
-	Origin  string `json:"origin" gorm:"not null"`
-	Short   string `json:"short" gorm:"unique;not null"`
-	Clicked uint64 `json:"clickedNum"`
-	Random  bool   `json:"isRandom"`
-	UserId  uint64 `json:"userId" gorm:"default:null"`
+	ID          uint64 `json:"id" gorm:"primaryKey"`
+	UserId      uint64 `json:"userId" gorm:"default:null"`
+	Origin      string `json:"origin" gorm:"not null"`
+	Title       string `json:"title" gorm:"default:null"`
+	Description string `json:"description" gorm:"default:null"`
+	Image       string `json:"image" gorm:"default:null"`
+	Short       string `json:"short" gorm:"unique;not null"`
+	Clicked     uint64 `json:"clickedNum"`
+	Random      bool   `json:"isRandom"`
 }
 
 type User struct {

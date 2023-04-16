@@ -85,8 +85,6 @@ func createUrlShorten(c *gin.Context) {
 	if len(userId) > 0 {
 		loginUserId, _ := c.Get("user_id")
 		if loginUserId != userId {
-			fmt.Println("userId", userId)
-			fmt.Println("loginUserId", loginUserId)
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"result":     false,
 				"error_code": http.StatusUnauthorized,
@@ -95,6 +93,11 @@ func createUrlShorten(c *gin.Context) {
 			return
 		}
 		urlShorten.UserId, _ = strconv.ParseUint(userId, 10, 64)
+	}else {
+		// 非會員無法加title等
+		urlShorten.Title = ""
+		urlShorten.Description = ""
+		urlShorten.Image = ""
 	}
 
 	urlShorten, err = model.CreateUrlShorten(urlShorten)
