@@ -23,6 +23,13 @@ func GetUrlShorten(id uint64) (UrlShorten, error) {
 	return urlShorten, nil
 }
 
+func GetUrlShortenFromOrigin(origin string) ([]UrlShorten) {
+	var urlShorten []UrlShorten
+	db.Where("origin = ?", origin).Find(&urlShorten)
+
+	return urlShorten
+}
+
 func CreateUrlShorten(urlShorten UrlShorten) (UrlShorten, error) {
 	tx := db.Create(&urlShorten)
 	return urlShorten, tx.Error

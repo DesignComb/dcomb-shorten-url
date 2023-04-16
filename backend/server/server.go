@@ -31,6 +31,7 @@ func SetupAndListen() {
 	api.GET("/r/:redirect", redirect)
 	//api.Get("/urlShorten", getAllUrlShorten)
 	api.GET("/urlShorten/:id", getUrlShorten)
+	api.GET("/urlShorten/origin", getUrlShortenFromOrigin)
 	api.POST("/urlShorten", createUrlShorten)
 	//api.Patch("/urlShorten", updateUrlShorten)
 	//api.Delete("/urlShorten/:id", deleteUrlShorten)

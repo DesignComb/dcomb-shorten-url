@@ -50,6 +50,16 @@ func getUrlShorten(c *gin.Context) {
 	c.JSON(http.StatusOK, url)
 }
 
+func getUrlShortenFromOrigin(c *gin.Context) {
+	origin := c.Query("origin")
+	if !(len(origin) > 0) {
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"message": "origin is empty."})
+		return
+	}
+	url := model.GetUrlShortenFromOrigin(origin)
+	c.JSON(http.StatusOK, url)
+}
+
 func createUrlShorten(c *gin.Context) {
 	acceptHeader := c.Request.Header.Get("Accept")
 	if acceptHeader != "" && acceptHeader != "application/json" {
