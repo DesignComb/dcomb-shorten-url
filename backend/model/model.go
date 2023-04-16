@@ -16,7 +16,7 @@ type UrlShorten struct {
 	Short   string `json:"short" gorm:"unique;not null"`
 	Clicked uint64 `json:"clickedNum"`
 	Random  bool   `json:"isRandom"`
-	UserId  uint64 `json:"userId"`
+	UserId  uint64 `json:"userId" gorm:"default:null"`
 }
 
 type User struct {

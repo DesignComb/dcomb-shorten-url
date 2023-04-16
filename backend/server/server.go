@@ -30,16 +30,18 @@ func SetupAndListen() {
 	// short url
 	api.GET("/r/:redirect", redirect)
 	//api.Get("/urlShorten", getAllUrlShorten)
+	api.GET("/urlShorten/:id", getUrlShorten)
+	api.POST("/urlShorten", createUrlShorten)
+	//api.Patch("/urlShorten", updateUrlShorten)
+	//api.Delete("/urlShorten/:id", deleteUrlShorten)
 
 	// user
 	userApi := api.Use(middleware.Auth())
 	userApi.GET("/user/info", GetUserInfo)
 
-	urlShortenApi := api.Use(middleware.Auth())
-	urlShortenApi.GET("/urlShorten/:id", getUrlShorten)
-	urlShortenApi.POST("/urlShorten", createUrlShorten)
-	//api.Patch("/urlShorten", updateUrlShorten)
-	//api.Delete("/urlShorten/:id", deleteUrlShorten)
+	// user short url
+	userUrlShortenApi := api.Use(middleware.Auth())
+	userUrlShortenApi.POST("/user/:userId/urlShorten", createUrlShorten)
 
 
 	// google login

@@ -80,6 +80,23 @@ func createUrlShorten(c *gin.Context) {
 		}
 	}
 
+	// logged in user
+	userId := c.Param("userId")
+	if len(userId) > 0 {
+		loginUserId, _ := c.Get("user_id")
+		if loginUserId != userId {
+			fmt.Println("userId", userId)
+			fmt.Println("loginUserId", loginUserId)
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"result":     false,
+				"error_code": http.StatusUnauthorized,
+			})
+			c.Abort()
+			return
+		}
+		urlShorten.UserId, _ = strconv.ParseUint(userId, 10, 64)
+	}
+
 	urlShorten, err = model.CreateUrlShorten(urlShorten)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not create urlShorten in db " + err.Error()})
