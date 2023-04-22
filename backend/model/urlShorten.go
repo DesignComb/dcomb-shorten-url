@@ -54,3 +54,15 @@ func FindByUrl(url string) (UrlShorten, error) {
 	tx := db.Where("short = ?", url).First(&urlShorten)
 	return urlShorten, tx.Error
 }
+
+func SearchUserUrlShorten(userId uint64, keyword string) []UrlShorten {
+	var urlShorten []UrlShorten
+	db.Where("user_id = ? AND (origin LIKE ? OR short LIKE ?)", userId, "%"+keyword+"%", "%"+keyword+"%").Find(&urlShorten)
+	return urlShorten
+}
+
+func SearchNonUserUrlShorten(keyword string) []UrlShorten {
+	var urlShorten []UrlShorten
+	db.Where("user_id is NULL AND (origin LIKE ? OR short LIKE ?)", "%"+keyword+"%", "%"+keyword+"%").Find(&urlShorten)
+	return urlShorten
+}

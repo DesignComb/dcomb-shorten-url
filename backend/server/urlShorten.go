@@ -46,8 +46,7 @@ func getUserUrlShorten(c *gin.Context) {
 	if exists {
 		str, ok := value.(string)
 		if ok {
-			loginUserId, _  := strconv.ParseUint(str, 10, 64)
-			fmt.Println(loginUserId)
+			loginUserId, _ := strconv.ParseUint(str, 10, 64)
 			url, err := model.GetUserUrlShorten(id, loginUserId)
 			if err != nil {
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error could not retrieve url from db " + err.Error()})
@@ -55,7 +54,7 @@ func getUserUrlShorten(c *gin.Context) {
 			}
 			c.JSON(http.StatusOK, url)
 		}
-	}else {
+	} else {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"result":     false,
 			"error_code": http.StatusUnauthorized,
@@ -77,7 +76,7 @@ func getUrlShortenFromOrigin(c *gin.Context) {
 func getUserUrlShortenFromOrigin(c *gin.Context) {
 	origin := c.Query("origin")
 	if !(len(origin) > 0) {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"message": "origin is empty."})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "origin is required."})
 		return
 	}
 
@@ -96,7 +95,7 @@ func getUserUrlShortenFromOrigin(c *gin.Context) {
 		if exists {
 			str, ok := value.(string)
 			if ok {
-				loginUserId, _  = strconv.ParseUint(str, 10, 64)
+				loginUserId, _ = strconv.ParseUint(str, 10, 64)
 			}
 		}
 	}
@@ -152,7 +151,7 @@ func createUrlShorten(c *gin.Context) {
 			return
 		}
 		urlShorten.UserId, _ = strconv.ParseUint(userId, 10, 64)
-	}else {
+	} else {
 		// 非會員無法加title等
 		urlShorten.Title = ""
 		urlShorten.Description = ""
@@ -208,4 +207,52 @@ func deleteUrlShorten(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "urlShorten deleted."})
+}
+
+func searchUserUrlShorten(c *gin.Context) {
+	keyword := c.Query("keyword")
+	if len(keyword) < 3 {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "keyword is required."})
+		c.Abort()
+		return
+	}
+
+	userId := c.Param("userId")
+	var loginUserId uint64
+	if len(userId) > 0 {
+		value, exists := c.Get("user_id")
+		if value != userId {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"result":     false,
+				"error_code": http.StatusUnauthorized,
+			})
+			c.Abort()
+			return
+		}
+		if exists {
+			str, ok := value.(string)
+			if ok {
+				loginUserId, _ = strconv.ParseUint(str, 10, 64)
+			}
+		}
+	}
+
+	userUrlShorten := model.SearchUserUrlShorten(loginUserId, keyword)
+	nonUserUrlShorten := model.SearchNonUserUrlShorten(keyword)
+
+	c.JSON(http.StatusOK, gin.H{
+		"userUrl":    userUrlShorten,
+		"nonUserUrl": nonUserUrlShorten,
+	})
+}
+
+func searchNonUserUrlShorten(c *gin.Context) {
+	keyword := c.Query("keyword")
+	if len(keyword) < 3 {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "keyword is required."})
+		c.Abort()
+		return
+	}
+	url := model.SearchNonUserUrlShorten(keyword)
+	c.JSON(http.StatusOK, url)
 }

@@ -32,6 +32,7 @@ func SetupAndListen() {
 	//api.Get("/urlShorten", getAllUrlShorten)
 	api.GET("/urlShorten/origin", getUrlShortenFromOrigin)
 	api.POST("/urlShorten", createUrlShorten)
+	api.GET("/urlShorten/search", searchNonUserUrlShorten)
 	//api.Patch("/urlShorten", updateUrlShorten)
 	//api.Delete("/urlShorten/:id", deleteUrlShorten)
 
@@ -44,6 +45,7 @@ func SetupAndListen() {
 	userUrlShortenApi.POST("/user/:userId/urlShorten", createUrlShorten)
 	userUrlShortenApi.GET("/user/:userId/urlShorten/origin", getUserUrlShortenFromOrigin)
 	userUrlShortenApi.GET("/urlShorten/:id", getUserUrlShorten)
+	userUrlShortenApi.GET("/user/:userId/urlShorten/search", searchUserUrlShorten)
 
 	// google login
 	//router.POST("/api/google/login", login)
