@@ -56,7 +56,7 @@ func getUrlShortenFromOrigin(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusOK, gin.H{"message": "origin is empty."})
 		return
 	}
-	url := model.GetUrlShortenFromOrigin(origin, 0)
+	url := model.GetNonUserUrlShortenFromOrigin(origin)
 	c.JSON(http.StatusOK, url)
 }
 
@@ -86,9 +86,13 @@ func getUserUrlShortenFromOrigin(c *gin.Context) {
 			}
 		}
 	}
-	url := model.GetUrlShortenFromOrigin(origin, loginUserId)
+	userUrlShorten := model.GetUserUrlShortenFromOrigin(origin, loginUserId)
+	nonUserUrlShorten := model.GetNonUserUrlShortenFromOrigin(origin)
 
-	c.JSON(http.StatusOK, url)
+	c.JSON(http.StatusOK, gin.H{
+		"userUrl":    userUrlShorten,
+		"nonUserUrl": nonUserUrlShorten,
+	})
 }
 
 func createUrlShorten(c *gin.Context) {
