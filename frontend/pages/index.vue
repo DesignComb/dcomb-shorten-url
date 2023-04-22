@@ -2,7 +2,7 @@
 import {ref, reactive, computed} from 'vue'
 import 'boxicons/css/boxicons.min.css'
 import {isValidHttpUrl} from '~/utils/verify'
-import {Disclosure, DisclosureButton, DisclosurePanel} from '@headlessui/vue'
+import {Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
 import QrController from "~/components/qrCode/qrController.vue";
 import LoadingAnimation from "~/components/common/loadingAnimation.vue";
 
@@ -65,7 +65,41 @@ const clickToCopy = () => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-sm flex flex-wrap h-screen content-center items-center">
+
+  <div class="relative mx-auto max-w-sm flex flex-wrap h-screen content-center items-center">
+    <!--    <div class="absolute w-10 h-10 p-2 m-2 cursor-pointer hover:bg-gray-600 rounded-full right-0 top-0">-->
+    <!--      <i class="bx bx-user pl-1"></i>-->
+    <!--    </div>-->
+    <Popover v-slot="{ open }"
+             class="absolute w-full flex flex-wrap justify-end right-0 top-0">
+      <div class="w-full flex justify-end">
+      <PopoverButton
+      class=" w-10 h-10 p-2 m-2 mr-0 cursor-pointer hover:bg-gray-600 rounded-full ">
+        <i class="bx bx-user"></i>
+      </PopoverButton>
+      </div>
+      <transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="-translate-y-1 opacity-0"
+          enter-to-class="translate-y-0 opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="translate-y-0 opacity-100"
+          leave-to-class="-translate-y-1 opacity-0"
+      >
+        <PopoverPanel
+            class="relative right-0 z-10 w-1/2 mt-1.5 transform"
+        >
+          <div
+              class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
+          >
+            <div class="relative grid gap-8 bg-gray-600 p-1 lg:grid-cols-2">
+              <img class="cursor-pointer"
+                   src="/btn_google_signin_dark_normal_web.png" alt="btn_google_dark_normal">
+            </div>
+          </div>
+        </PopoverPanel>
+      </transition>
+    </Popover>
     <form class="w-full max-w-sm">
       <div class="flex items-center border-b border-teal-500 py-2">
         <input
