@@ -35,19 +35,33 @@ func getAllUrlShorten(c *gin.Context) {
 	c.JSON(http.StatusOK, urls)
 }
 
-func getUrlShorten(c *gin.Context) {
+func getUserUrlShorten(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error could not parse id " + err.Error()})
 		return
 	}
 
-	url, err := model.GetUrlShorten(id)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error could not retrieve url from db " + err.Error()})
-		return
+	value, exists := c.Get("user_id")
+	if exists {
+		str, ok := value.(string)
+		if ok {
+			loginUserId, _  := strconv.ParseUint(str, 10, 64)
+			fmt.Println(loginUserId)
+			url, err := model.GetUserUrlShorten(id, loginUserId)
+			if err != nil {
+				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error could not retrieve url from db " + err.Error()})
+				return
+			}
+			c.JSON(http.StatusOK, url)
+		}
+	}else {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"result":     false,
+			"error_code": http.StatusUnauthorized,
+		})
+		c.Abort()
 	}
-	c.JSON(http.StatusOK, url)
 }
 
 func getUrlShortenFromOrigin(c *gin.Context) {

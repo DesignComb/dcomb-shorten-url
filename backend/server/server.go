@@ -30,7 +30,6 @@ func SetupAndListen() {
 	// short url
 	api.GET("/r/:redirect", redirect)
 	//api.Get("/urlShorten", getAllUrlShorten)
-	api.GET("/urlShorten/:id", getUrlShorten)
 	api.GET("/urlShorten/origin", getUrlShortenFromOrigin)
 	api.POST("/urlShorten", createUrlShorten)
 	//api.Patch("/urlShorten", updateUrlShorten)
@@ -44,6 +43,7 @@ func SetupAndListen() {
 	userUrlShortenApi := api.Use(middleware.Auth())
 	userUrlShortenApi.POST("/user/:userId/urlShorten", createUrlShorten)
 	userUrlShortenApi.GET("/user/:userId/urlShorten/origin", getUserUrlShortenFromOrigin)
+	userUrlShortenApi.GET("/urlShorten/:id", getUserUrlShorten)
 
 	// google login
 	//router.POST("/api/google/login", login)
