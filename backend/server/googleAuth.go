@@ -24,7 +24,7 @@ func access(c *gin.Context) {
 func oauthURL() string {
 	u := "https://accounts.google.com/o/oauth2/v2/auth?client_id=%s&response_type=code&scope=%s %s&redirect_uri=%s"
 
-	return fmt.Sprintf(u, config.Val.GoogleClientID, "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "http://localhost:8000/api/ouath/google/login")
+	return fmt.Sprintf(u, config.Val.GoogleClientID, "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "http://localhost:8001/validate/login")
 }
 
 func login(c *gin.Context) {
