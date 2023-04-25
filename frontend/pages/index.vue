@@ -62,6 +62,23 @@ const clickToCopy = () => {
         isCopied.value = true
       })
 }
+
+let googleAuthUrl = ref('')
+
+async function getGoogleAuthUrl() {
+  await $fetch(`${apiBaseUrl}/api/ouath/google/url`, {
+    method: 'GET',
+  })
+      .then((res) => {
+        googleAuthUrl.value = (res as { url: string }).url
+      })
+}
+
+const callback = (response:any) => {
+  // This callback will be triggered when the user selects or login to
+  // his Google account from the popup
+  console.log("Handle the response", response)
+}
 </script>
 
 <template>
@@ -73,10 +90,10 @@ const clickToCopy = () => {
     <Popover v-slot="{ open }"
              class="absolute w-full flex flex-wrap justify-end right-0 top-0">
       <div class="w-full flex justify-end">
-      <PopoverButton
-      class=" w-10 h-10 p-2 m-2 mr-0 cursor-pointer hover:bg-gray-600 rounded-full ">
-        <i class="bx bx-user"></i>
-      </PopoverButton>
+        <PopoverButton @click="getGoogleAuthUrl"
+                       class=" w-10 h-10 p-2 m-2 mr-0 cursor-pointer hover:bg-gray-600 rounded-full ">
+          <i class="bx bx-user"></i>
+        </PopoverButton>
       </div>
       <transition
           enter-active-class="transition duration-200 ease-out"
@@ -92,10 +109,10 @@ const clickToCopy = () => {
           <div
               class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
           >
-            <div class="relative grid gap-8 bg-gray-600 p-1 lg:grid-cols-2">
+            <a :href="googleAuthUrl" class="relative grid gap-8 bg-gray-600 p-1">
               <img class="cursor-pointer"
                    src="/btn_google_signin_dark_normal_web.png" alt="btn_google_dark_normal">
-            </div>
+            </a>
           </div>
         </PopoverPanel>
       </transition>
