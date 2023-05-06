@@ -19,13 +19,16 @@ const getUrlQueryParams = async () => {
 }
 
 async function login(code:string) {
-  await $fetch(`${apiBaseUrl}/api/ouath/google/login?code=${code}`, {
+  await $fetch(`${apiBaseUrl}/api/ouath/google/login?code=${code}&scope=email+profile+https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email+openid&authuser=0&prompt=consent`, {
     method: 'GET',
   })
       .then((res) => {
         console.log(res)
-        getUserInfo()
+        // getUserInfo()
         // router.push('/')
+      })
+      .finally(() => {
+        getUserInfo()
       })
 }
 
