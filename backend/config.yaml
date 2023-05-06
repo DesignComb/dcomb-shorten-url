@@ -13,3 +13,5 @@ JWT_SECRET:
 
 Port: 3001
 DbHost: localhost
+
+Host: "http://localhost:8001"

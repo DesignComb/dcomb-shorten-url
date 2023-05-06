@@ -24,7 +24,7 @@ func access(c *gin.Context) {
 func oauthURL() string {
 	u := "https://accounts.google.com/o/oauth2/v2/auth?client_id=%s&response_type=code&scope=%s %s&redirect_uri=%s"
 
-	return fmt.Sprintf(u, config.Val.GoogleClientID, "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "http://localhost:8001/validate/login")
+	return fmt.Sprintf(u, config.Val.GoogleClientID, "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", config.Val.Host + "/validate/login")
 }
 
 func login(c *gin.Context) {
@@ -75,8 +75,7 @@ func login(c *gin.Context) {
 		return
 	}
 
-	// 測試domain先寫localhost secure先寫false
-	c.SetCookie(jwt.Key, jwtToken, config.Val.JWTTokenLife, "/", "localhost", false, true)
+	c.SetCookie(jwt.Key, jwtToken, config.Val.JWTTokenLife, "/", "", false, true)
 
 	log.Infof("userid: %v logged in", user.ID)
 }
@@ -89,7 +88,7 @@ func accessToken(code string) (token string, err error) {
 		"client_id":     {config.Val.GoogleClientID},
 		"client_secret": {config.Val.GoogleSecretKey},
 		"grant_type":    {"authorization_code"},
-		"redirect_uri":  {"http://localhost:8000/api/ouath/google/login"},
+		"redirect_uri":  {config.Val.Host + "/validate/login"},
 	}
 	body := strings.NewReader(data.Encode())
 

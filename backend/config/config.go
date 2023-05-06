@@ -21,6 +21,8 @@ type Config struct {
 
 	JWTTokenLife  int `structure:"JWT_TOKEN_LIFE"`
 	JWTSecret  string `structure:"JWT_SECRET"`
+
+	Host  string `structure:"HOST"`
 }
 
 func Init() {
