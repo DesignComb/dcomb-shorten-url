@@ -16,9 +16,11 @@ func SetupAndListen() {
 
 	// cors
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://172.19.0.1", "http://54.249.0.5", "http://54.249.0.5", "https://dco.tw", "http://localhost:8001", "http://localhost:3000"},
-		AllowHeaders: []string{"Origin", "Content-Type", "Accept", "Content-Length", "Accept-Language", "Accept-Encoding", "Connection", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"},
-		AllowMethods: []string{"GET", "POST", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		AllowOrigins:  []string{"http://172.19.0.1", "http://54.249.0.5", "http://54.249.0.5", "https://dco.tw", "http://localhost:8001", "http://localhost:3000"},
+		AllowHeaders:  []string{"Origin", "Content-Type", "Accept", "Content-Length", "Accept-Language", "Accept-Encoding", "Connection", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Set-Cookie"},
+		AllowMethods:  []string{"GET", "POST", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		ExposeHeaders: []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type", "Set-Cookie"},
+
 		AllowCredentials: true,
 	}))
 

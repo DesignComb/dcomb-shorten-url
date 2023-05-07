@@ -24,7 +24,7 @@ func access(c *gin.Context) {
 func oauthURL() string {
 	u := "https://accounts.google.com/o/oauth2/v2/auth?client_id=%s&response_type=code&scope=%s %s&redirect_uri=%s"
 
-	return fmt.Sprintf(u, config.Val.GoogleClientID, "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", config.Val.Host + "/validate/login")
+	return fmt.Sprintf(u, config.Val.GoogleClientID, "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", config.Val.Host+"/validate/login")
 }
 
 func login(c *gin.Context) {
@@ -50,7 +50,7 @@ func login(c *gin.Context) {
 
 	// 不是使用者，new user
 	user, _ := model.GetUser(googleUserId)
-	if(user == model.User{}){
+	if (user == model.User{}) {
 		var user model.User
 		user.GoogleUserId = googleUserId
 		user.GoogleUserEmail = email
@@ -74,8 +74,14 @@ func login(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/")
 		return
 	}
-
-	c.SetCookie(jwt.Key, jwtToken, config.Val.JWTTokenLife, "/", "", false, true)
+	//c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers,Content-Type, Set-Cookie")
+	c.Writer.Header().Set("Access-Control-Allow-Origin", c.GetHeader("Origin"))
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Set-Cookie")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	fmt.Println(jwtToken)
+	c.SetSameSite(4)
+	c.SetCookie(jwt.Key, jwtToken, config.Val.JWTTokenLife, "", "http://localhost:8001", true, false)
 
 	log.Infof("userid: %v logged in", user.ID)
 }

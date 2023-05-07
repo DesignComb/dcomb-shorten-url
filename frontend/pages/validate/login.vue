@@ -21,27 +21,28 @@ const getUrlQueryParams = async () => {
 async function login(code:string) {
   await $fetch(`${apiBaseUrl}/api/ouath/google/login?code=${code}&scope=email+profile+https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email+openid&authuser=0&prompt=consent`, {
     method: 'GET',
-  })
-      .then((res) => {
-        console.log(res)
-        // getUserInfo()
-        // router.push('/')
-      })
-      .finally(() => {
-        getUserInfo()
-      })
-}
-
-async function getUserInfo() {
-  await $fetch(`${apiBaseUrl}/api/user/info`, {
-    method: 'GET',
     credentials: 'include',
   })
       .then((res) => {
         console.log(res)
+        // getUserInfo()
         router.push('/')
       })
+      .finally(() => {
+        // getUserInfo()
+      })
 }
+//
+// async function getUserInfo() {
+//   await $fetch(`${apiBaseUrl}/api/user/info`, {
+//     method: 'GET',
+//     credentials: 'include',
+//   })
+//       .then((res) => {
+//         console.log(res)
+//         router.push('/')
+//       })
+// }
 </script>
 
 <template>

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {ref, reactive, computed} from 'vue'
+import { onMounted } from 'vue';
+
 import 'boxicons/css/boxicons.min.css'
 import {isValidHttpUrl} from '~/utils/verify'
 import {Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
@@ -10,6 +12,7 @@ import {getLinkPreview, getPreviewFromContent} from "link-preview-js";
 
 const {appBaseUrl, apiBaseUrl} = useRuntimeConfig().public
 import {Response} from 'node-fetch';
+import {a} from "vite-node/types-63205a44";
 
 
 const urlObj = reactive({
@@ -79,6 +82,23 @@ const callback = (response:any) => {
   // his Google account from the popup
   console.log("Handle the response", response)
 }
+
+const userInfo = reactive({data: {}})
+
+onMounted(() => {
+  getUserInfo()
+});
+
+async function getUserInfo() {
+  await $fetch(`${apiBaseUrl}/api/user/info`, {
+    method: 'GET',
+    credentials: 'include',
+  })
+      .then((res:any) => {
+        userInfo.data = res
+        console.log(res)
+      })
+}
 </script>
 
 <template>
@@ -90,6 +110,7 @@ const callback = (response:any) => {
     <Popover v-slot="{ open }"
              class="absolute w-full flex flex-wrap justify-end right-0 top-0">
       <div class="w-full flex justify-end">
+<!--        <div v-if="userInfo.data">{{userInfo.data}}</div>-->
         <PopoverButton @click="getGoogleAuthUrl"
                        class=" w-10 h-10 p-2 m-2 mr-0 cursor-pointer hover:bg-gray-600 rounded-full ">
           <i class="bx bx-user"></i>
