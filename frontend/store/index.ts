@@ -8,7 +8,7 @@ export const useMainStore = defineStore('main', {
     actions: {
         async getGoogleAuthUrl() {
             const response = await Api.getGoogleAuthUrl()
-            this.googleAuthUrl = response.url
+            this.googleAuthUrl = response.data.value.url
         },
     },
-})//33
+})

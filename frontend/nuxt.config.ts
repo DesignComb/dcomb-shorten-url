@@ -44,5 +44,4 @@ export default defineNuxtConfig({
         // set ssr false on enter url page
         '/': { ssr: false }
     }
-
 })

@@ -12,7 +12,9 @@ export const useUserStore = defineStore('user', {
     actions: {
         async getUserInfo() {
             const response = await Api.getUserInfo()
-            this.userInfo = response.data
+            if(response.data.value){
+                this.userInfo = response.data.value.data
+            }
         },
     },
-})//33
+})

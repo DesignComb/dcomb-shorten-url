@@ -4,7 +4,7 @@ import LoadingAnimation from "~/components/common/loadingAnimation.vue";
 
 const route = useRoute()
 const {id} = route.params
-const { appBaseUrl,apiBaseUrl,serverApiBaseUrl } = useRuntimeConfig().public
+const { appBaseUrl,apiBaseUrl,serverApiBaseUrl } = useRuntimeConfig()
 
 const {data, pending, error, refresh} = await useAsyncData(
     'id',
