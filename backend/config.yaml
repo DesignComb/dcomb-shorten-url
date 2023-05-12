@@ -1,17 +1,17 @@
 MODE: "debug"
-Port: 5000
-DbHost: db
+#Port: 5000
+#DbHost: db
 DbUser: user
 DbPwd: mysecretpassword
 DbName: postgres
 
-GoogleClientID: "787068690292-lqte8ie444vnsq51vub8sfbir0p6qe1p.apps.googleusercontent.com"
-GoogleSecretKey: "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"
+GoogleClientID:
+GoogleSecretKey:
 
-JWTTokenLife: 2592000
-JWTSecret: "FEDmaODyHotcpUpZoEBB50qLqkYj7z8JmkU7xQ4euBbX79XCDZL6AoAXIduWuZP"
+JWT_TOKEN_LIFE: 2592000
+JWT_SECRET:
 
-#Port: 3001
-#DbHost: localhost
+Port: 3001
+DbHost: localhost
 
 Host: "http://localhost:8001"
