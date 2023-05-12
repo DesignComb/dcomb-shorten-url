@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
     modules: [
         '@nuxt/image-edge',
+        '@pinia/nuxt',
     ],
     runtimeConfig: { // auto get .env setting
         public: {
@@ -10,6 +11,7 @@ export default defineNuxtConfig({
             serverApiBaseUrl: ''
         }
     },
+    devServerHandlers: [],
     image: {
         imgix: {
             baseURL: 'https://assets.imgix.net'
