@@ -6,11 +6,11 @@ import {useUserStore} from '~/store/user'
 const route = useRoute()
 const router = useRouter()
 
-onMounted(async () => {
-    await router.isReady()
-    const user = useUserStore()
-    await user.login(<string>route.query.code)
-});
+const user = useUserStore()
+
+// await router.isReady()
+await user.login(<string>route.query.code)
+await router.push('/')
 
 </script>
 

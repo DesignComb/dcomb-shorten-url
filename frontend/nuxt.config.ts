@@ -42,6 +42,7 @@ export default defineNuxtConfig({
         // '/old-page': { redirect: '/new-page' },
 
         // set ssr false on enter url page
-        '/': { ssr: false }
+        '/': { ssr: false },
+        '/validate/login': { ssr: false }
     }
 })
