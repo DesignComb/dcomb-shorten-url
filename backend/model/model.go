@@ -33,7 +33,7 @@ type User struct {
 type Image struct {
 	ID     uint64 `json:"id" gorm:"primaryKey"`
 	UserId uint64 `json:"userId" gorm:"not null"`
-	Url    string `json:"url" gorm:"unique;not null"`
+	Uri    string `json:"uri" gorm:"unique;not null"`
 }
 
 func Setup() {
