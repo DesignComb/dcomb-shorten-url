@@ -50,6 +50,10 @@ func SetupAndListen() {
 	userUrlShortenApi.GET("/urlShorten/:id", getUserUrlShorten)
 	userUrlShortenApi.GET("/user/:userId/urlShorten/search", searchUserUrlShorten)
 
+	// user image
+	userImageApi := api.Use(middleware.Auth())
+	userImageApi.POST("/user/:userId/image", UploadImage)
+
 	// google login
 	//router.POST("/api/google/login", login)
 

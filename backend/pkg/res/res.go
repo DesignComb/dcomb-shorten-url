@@ -26,7 +26,7 @@ func BadRequest(c *gin.Context, payload interface{}, message string) {
 func SystemError(c *gin.Context, payload interface{}, message string) {
 	c.JSON(http.StatusInternalServerError, gin.H{
 		"status":     "error",
-		"code":       http.StatusBadRequest,
+		"code":       http.StatusInternalServerError,
 		"message":    message,
 		"data":       payload,
 	})
