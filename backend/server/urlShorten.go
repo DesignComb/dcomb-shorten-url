@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"main/model"
+	"main/pkg/res"
 	"main/utils"
 	"net/http"
 	"strconv"
@@ -23,7 +24,9 @@ func redirect(c *gin.Context) {
 		fmt.Printf("error updating: %v\n", err)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"origin": url.Origin})
+	res.Success(c, gin.H{
+		"origin": url.Origin,
+	})
 }
 
 func getAllUrlShorten(c *gin.Context) {
@@ -32,7 +35,7 @@ func getAllUrlShorten(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error getting all goly links " + err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, urls)
+	res.Success(c, urls)
 }
 
 func getUserUrlShorten(c *gin.Context) {
@@ -52,13 +55,10 @@ func getUserUrlShorten(c *gin.Context) {
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error could not retrieve url from db " + err.Error()})
 				return
 			}
-			c.JSON(http.StatusOK, url)
+			res.Success(c, url)
 		}
 	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"result":     false,
-			"error_code": http.StatusUnauthorized,
-		})
+		res.Unauthorized(c, nil, "not logged in")
 		c.Abort()
 	}
 }
@@ -70,7 +70,7 @@ func getUrlShortenFromOrigin(c *gin.Context) {
 		return
 	}
 	url := model.GetNonUserUrlShortenFromOrigin(origin)
-	c.JSON(http.StatusOK, url)
+	res.Success(c, url)
 }
 
 func getUserUrlShortenFromOrigin(c *gin.Context) {
@@ -85,10 +85,7 @@ func getUserUrlShortenFromOrigin(c *gin.Context) {
 	if len(userId) > 0 {
 		value, exists := c.Get("user_id")
 		if value != userId {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"result":     false,
-				"error_code": http.StatusUnauthorized,
-			})
+			res.Unauthorized(c, nil, "no permission")
 			c.Abort()
 			return
 		}
@@ -102,7 +99,7 @@ func getUserUrlShortenFromOrigin(c *gin.Context) {
 	userUrlShorten := model.GetUserUrlShortenFromOrigin(origin, loginUserId)
 	nonUserUrlShorten := model.GetNonUserUrlShortenFromOrigin(origin)
 
-	c.JSON(http.StatusOK, gin.H{
+	res.Success(c, gin.H{
 		"userUrl":    userUrlShorten,
 		"nonUserUrl": nonUserUrlShorten,
 	})
@@ -143,10 +140,7 @@ func createUrlShorten(c *gin.Context) {
 	if len(userId) > 0 {
 		loginUserId, _ := c.Get("user_id")
 		if loginUserId != userId {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"result":     false,
-				"error_code": http.StatusUnauthorized,
-			})
+			res.Unauthorized(c, nil, "no permission")
 			c.Abort()
 			return
 		}
@@ -164,7 +158,7 @@ func createUrlShorten(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, urlShorten)
+	res.Success(c, urlShorten)
 }
 
 func updateUrlShorten(c *gin.Context) {
@@ -190,7 +184,7 @@ func updateUrlShorten(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, urlShorten)
+	res.Success(c, urlShorten)
 }
 
 func deleteUrlShorten(c *gin.Context) {
@@ -206,13 +200,13 @@ func deleteUrlShorten(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "urlShorten deleted."})
+	res.Success(c, nil)
 }
 
 func searchUserUrlShorten(c *gin.Context) {
 	keyword := c.Query("keyword")
 	if len(keyword) < 3 {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "keyword is required."})
+		res.BadRequest(c, nil, "keyword is required")
 		c.Abort()
 		return
 	}
@@ -222,10 +216,7 @@ func searchUserUrlShorten(c *gin.Context) {
 	if len(userId) > 0 {
 		value, exists := c.Get("user_id")
 		if value != userId {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"result":     false,
-				"error_code": http.StatusUnauthorized,
-			})
+			res.Unauthorized(c, nil, "no permission")
 			c.Abort()
 			return
 		}
@@ -240,7 +231,7 @@ func searchUserUrlShorten(c *gin.Context) {
 	userUrlShorten := model.SearchUserUrlShorten(loginUserId, keyword)
 	nonUserUrlShorten := model.SearchNonUserUrlShorten(keyword)
 
-	c.JSON(http.StatusOK, gin.H{
+	res.Success(c, gin.H{
 		"userUrl":    userUrlShorten,
 		"nonUserUrl": nonUserUrlShorten,
 	})
@@ -249,10 +240,10 @@ func searchUserUrlShorten(c *gin.Context) {
 func searchNonUserUrlShorten(c *gin.Context) {
 	keyword := c.Query("keyword")
 	if len(keyword) < 3 {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "keyword is required."})
+		res.BadRequest(c, nil, "keyword is required")
 		c.Abort()
 		return
 	}
 	url := model.SearchNonUserUrlShorten(keyword)
-	c.JSON(http.StatusOK, url)
+	res.Success(c, url)
 }

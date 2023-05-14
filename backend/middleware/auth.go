@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"main/pkg/jwt"
-	"net/http"
+	"main/pkg/res"
 )
 
 // Auth Auth
@@ -12,20 +12,14 @@ func Auth() gin.HandlerFunc {
 		// 取得token
 		token, err := c.Cookie(jwt.Key)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"result":     false,
-				"error_code": http.StatusUnauthorized,
-			})
+			res.Unauthorized(c, nil, "not logged in")
 			c.Abort()
 			return
 		}
 		// 解析token 取得會員的資料
 		userId, googleUserId, email, name, picture, err := jwt.ParseToken(token)
 		if err != nil || userId == "" || googleUserId == "" || email == "" || name == "" || picture == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"result":     false,
-				"error_code": http.StatusUnauthorized,
-			})
+			res.Unauthorized(c, nil, "not logged in")
 			c.Abort()
 			return
 		}

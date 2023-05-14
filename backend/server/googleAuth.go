@@ -9,6 +9,7 @@ import (
 	"main/config"
 	"main/model"
 	jwt "main/pkg/jwt"
+	"main/pkg/res"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -16,7 +17,7 @@ import (
 )
 
 func access(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
+	res.Success(c, gin.H{
 		"url": oauthURL(),
 	})
 }
@@ -84,6 +85,7 @@ func login(c *gin.Context) {
 	c.SetCookie(jwt.Key, jwtToken, config.Val.JWTTokenLife, "", "http://localhost:8001", true, false)
 
 	log.Infof("userid: %v logged in", user.ID)
+	res.Success(c, gin.H{})
 }
 
 func accessToken(code string) (token string, err error) {

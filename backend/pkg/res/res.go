@@ -5,28 +5,38 @@ import (
 	"net/http"
 )
 
-// Success Success
 func Success(c *gin.Context, payload interface{}) {
 	c.JSON(http.StatusOK, gin.H{
-		"result": true,
-		"data":   payload,
+		"status":  "success",
+		"code":    http.StatusOK,
+		//"message": message,
+		"data":    payload,
 	})
 }
 
-// BadRequest BadRequest
-func BadRequest(c *gin.Context, errorCode int, payload interface{}) {
+func BadRequest(c *gin.Context, payload interface{}, message string) {
 	c.JSON(http.StatusBadRequest, gin.H{
-		"result":     false,
-		"error_code": errorCode,
-		"msg":        payload,
+		"status":     "error",
+		"code":       http.StatusBadRequest,
+		"message":    message,
+		"data":       payload,
 	})
 }
 
-// SystemError SystemError
-func SystemError(c *gin.Context, errorCode int, payload interface{}) {
+func SystemError(c *gin.Context, payload interface{}, message string) {
 	c.JSON(http.StatusInternalServerError, gin.H{
-		"result":     false,
-		"error_code": errorCode,
-		"msg":        payload,
+		"status":     "error",
+		"code":       http.StatusBadRequest,
+		"message":    message,
+		"data":       payload,
+	})
+}
+
+func Unauthorized(c *gin.Context, payload interface{}, message string) {
+	c.JSON(http.StatusUnauthorized, gin.H{
+		"status":     "error",
+		"code":       http.StatusUnauthorized,
+		"message":    message,
+		"data":       payload,
 	})
 }
