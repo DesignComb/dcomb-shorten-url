@@ -145,11 +145,12 @@ func createUrlShorten(c *gin.Context) {
 			return
 		}
 		urlShorten.UserId, _ = strconv.ParseUint(userId, 10, 64)
+		// todo：imageId 不存在或不屬於此user
 	} else {
 		// 非會員無法加title等
 		urlShorten.Title = ""
 		urlShorten.Description = ""
-		urlShorten.Image = ""
+		urlShorten.ImageId = 0
 	}
 
 	urlShorten, err = model.CreateUrlShorten(urlShorten)
