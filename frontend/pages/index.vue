@@ -14,52 +14,54 @@ const {appBaseUrl, apiBaseUrl} = useRuntimeConfig()
 
 import {useMainStore} from '~/store'
 import {useUserStore} from '~/store/user'
+import ImgDialog from "~/components/common/imgDialog.vue";
+import ImgCropper from "~/components/common/imgCropper.vue";
 
 const main = useMainStore()
 const user = useUserStore()
 
 // import Api from '~/utils/api'
 
-const urlObj = reactive({
-    origin: '',
-    isRandom: true,
-    meta: {}
-})
+// const urlObj = reactive({
+//     origin: '',
+//     isRandom: true,
+//     meta: {}
+// })
 const response: any = reactive({data: {short: ''}})
-const isSuccess = ref(false)
+// const isSuccess = ref(false)
 
-async function submit() {
-    if (isValidHttpUrl(urlObj.origin)) {
-        response.data = await $fetch(`${apiBaseUrl}/api/urlShorten`, {
-            method: 'POST',
-            body: urlObj,
-        })
-        if (response.data.short !== '') {
-            isSuccess.value = true
-            // // 獲取原始網址的 meta 資料
-            // const metaResponse = await useFetch(urlObj.origin)
-            // const metaText = await metaResponse?.text()
-            // const parser = new DOMParser()
-            // const htmlDocument = parser.parseFromString(metaText, 'text/html')
-            // const metaTags = htmlDocument.getElementsByTagName('meta')
-            // // 從 meta 資料中獲取需要顯示的屬性
-            // const title = htmlDocument.querySelector('title')?.textContent
-            // const description = Array.from(metaTags).find(tag => tag.getAttribute('name') === 'description')?.getAttribute('content')
-            // const imageUrl = Array.from(metaTags).find(tag => tag.getAttribute('property') === 'og:image')?.getAttribute('content')
-            // urlObj.meta = {
-            //   title,
-            //   description,
-            //   imageUrl,
-            // }
-        }
-    } else {
-        alert('請填入正確的URL')
-    }
-}
+// async function submit() {
+//     if (isValidHttpUrl(urlObj.origin)) {
+//         response.data = await $fetch(`${apiBaseUrl}/api/urlShorten`, {
+//             method: 'POST',
+//             body: urlObj,
+//         })
+//         if (response.data.short !== '') {
+//             isSuccess.value = true
+//             // // 獲取原始網址的 meta 資料
+//             // const metaResponse = await useFetch(urlObj.origin)
+//             // const metaText = await metaResponse?.text()
+//             // const parser = new DOMParser()
+//             // const htmlDocument = parser.parseFromString(metaText, 'text/html')
+//             // const metaTags = htmlDocument.getElementsByTagName('meta')
+//             // // 從 meta 資料中獲取需要顯示的屬性
+//             // const title = htmlDocument.querySelector('title')?.textContent
+//             // const description = Array.from(metaTags).find(tag => tag.getAttribute('name') === 'description')?.getAttribute('content')
+//             // const imageUrl = Array.from(metaTags).find(tag => tag.getAttribute('property') === 'og:image')?.getAttribute('content')
+//             // urlObj.meta = {
+//             //   title,
+//             //   description,
+//             //   imageUrl,
+//             // }
+//         }
+//     } else {
+//         alert('請填入正確的URL')
+//     }
+// }
 
 const protocol = window.location.protocol;
 const currentHost = window.location.host;
-const completeUrl = computed(() => `${protocol}//${currentHost}/${response.data.short}`)
+const completeUrl = computed(() => `${protocol}//${currentHost}/${main.shortenUrl}`)
 
 
 const isCopied = ref(false)
@@ -73,6 +75,9 @@ const clickToCopy = () => {
 main.getGoogleAuthUrl()
 user.getUserInfo()
 
+const handleUrlInputChange = () => {
+    // main.searchUrl(urlObj.origin)
+}
 </script>
 
 <template>
@@ -121,21 +126,22 @@ user.getUserInfo()
         <form class="w-full max-w-sm">
             <div class="flex items-center border-b border-teal-500 py-2">
                 <input
-                        v-model="urlObj.origin"
+                        v-model="main.urlObj.origin"
+                        @change="handleUrlInputChange"
                         class="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
                         type="text" placeholder="Url" aria-label="Full name">
                 <button
-                        @click="submit"
+                        @click="main.postUrl()"
                         class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
                         type="button">
                     Shorten
                 </button>
             </div>
         </form>
-        <div v-if="isSuccess" class="w-full flex flex-wrap relative mt-4">
+        <div v-if="main.shortenUrl" class="w-full flex flex-wrap relative mt-4">
             Congratulations! Your Short Url：<br>
             <input class="flex w-full mt-1.5 px-4 py-1.5 text-black rounded"
-                   ref="shortUrl"
+                   ref="shortenUrl" name="shortenUrl"
                    v-model="completeUrl" disabled/>
             <span @click="clickToCopy"
                   class="absolute w-8 h-8 z-10 -top-1 right-0 flex justify-center items-center cursor-pointer">
@@ -145,8 +151,8 @@ user.getUserInfo()
         </div>
         <div class="w-full pt-8">
             <Disclosure v-slot="{ open }">
-                <DisclosureButton
-                        class="flex w-full justify-between item-center px-2 py-2 rounded-t-md border-b border-teal-500 text-left text-sm font-medium text-teal-500 hover:bg-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
+                <DisclosureButton :disabled="!main.shortenUrl"
+                                  class="flex w-full justify-between item-center px-2 py-2 rounded-t-md border-b border-teal-500 text-left text-sm font-medium text-teal-500 hover:bg-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
                 >
                     <span>QR code</span>
                     <i :class="open ? 'rotate-180 transform' : ''"
@@ -157,16 +163,25 @@ user.getUserInfo()
                 </DisclosurePanel>
             </Disclosure>
             <Disclosure as="div" class="mt-8" v-slot="{ open }">
-                <DisclosureButton
-                        class="flex w-full justify-between item-center px-2 py-2 rounded-t-md border-b border-teal-500 text-left text-sm font-medium text-teal-500 hover:bg-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
+                <DisclosureButton :disabled="user.userInfo.user_id == 0"
+                                  class="flex w-full justify-between item-center px-2 py-2 rounded-t-md border-b border-teal-500 text-left text-sm font-medium text-teal-500 hover:bg-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
                 >
-                    <span>SEO Renderer</span>
+                    <span>Link preview Setting (registered only)</span>
                     <i :class="open ? 'rotate-180 transform' : ''"
                        class='bx bx-chevron-down'></i>
                 </DisclosureButton>
-                <DisclosurePanel class="px-4 pt-4 pb-2 text-sm text-gray-500 transform duration-500">
-                    If you're unhappy with your purchase for any reason, email us within
-                    90 days and we'll refund you in full, no questions asked.
+                <DisclosurePanel class="flex flex-wrap pt-4 pb-2 text-gray-500 transform duration-500">
+                    <div class="flex w-full my-1.5">
+                        <img-dialog/>
+                    </div>
+                    <label>title</label>
+                    <input class="flex w-full my-1.5 px-4 py-1.5 text-black rounded"
+                           placeholder="preview Title"
+                           v-model="user.urlPreview.title"/>
+                    <label>Description</label>
+                    <textarea class="flex w-full my-1.5 px-4 py-1.5 text-black rounded"
+                              rows="5" placeholder="preview Description"
+                              v-model="user.urlPreview.description"/>
                 </DisclosurePanel>
             </Disclosure>
         </div>
@@ -183,6 +198,13 @@ user.getUserInfo()
 
 <style scoped>
 :disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+input[name="shortenUrl"]:disabled {
     background-color: white;
+    opacity: initial;
+    cursor: initial;
 }
 </style>

@@ -17,5 +17,29 @@ export default {
             method: 'GET',
             credentials: 'include',
         })
-    }
+    },
+    searchUrl: (keyword:string) :any => {
+        return useFetch(`${apiBaseUrl}/api/urlShorten/search?keyword=${keyword}`, {
+            method: 'GET',
+        })
+    },
+    userSearchUrl: (userID:number,keyword:string) :any => {
+        return useFetch(`${apiBaseUrl}/api/user/${{userID}}/urlShorten/search?keyword=${keyword}`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+    },
+    postUrl: (urlObj:object) :any => {
+        return useFetch(`${apiBaseUrl}/api/urlShorten`, {
+            method: 'POST',
+            body:urlObj
+        })
+    },
+    userPostUrl: (userID:number,userUrlObj:object) :any => {
+        return useFetch(`${apiBaseUrl}/api/user/${{userID}}/urlShorten`, {
+            method: 'POST',
+            body:userUrlObj,
+            credentials: 'include',
+        })
+    },
 }
