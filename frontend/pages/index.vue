@@ -89,9 +89,9 @@ const handleUrlInputChange = () => {
         <Popover v-slot="{ open }"
                  class="absolute w-full flex flex-wrap justify-end right-0 top-0">
             <div class="w-full flex justify-end">
-                <div v-if="user.userInfo.user_id > 0">
+                <div v-if="user.userInfo.user_id > 0" class="py-4 pl-2">
                     <div class="flex items-center w-full">
-                        <img class="rounded-full w-8 h-8 mr-2" :src="user.userInfo.user_picture" alt="">
+                        <img class="rounded-full w-6 h-6 mr-2" :src="user.userInfo.user_picture" alt="">
                         {{ user.userInfo.user_name }}
                     </div>
                 </div>
@@ -171,7 +171,8 @@ const handleUrlInputChange = () => {
                        class='bx bx-chevron-down'></i>
                 </DisclosureButton>
                 <DisclosurePanel class="flex flex-wrap pt-4 pb-2 text-gray-500 transform duration-500">
-                    <div class="flex w-full my-1.5">
+                    <label>Picture</label>
+                    <div class="flex flex-wrap w-full my-1.5">
                         <img-dialog/>
                     </div>
                     <label>title</label>
@@ -186,6 +187,9 @@ const handleUrlInputChange = () => {
             </Disclosure>
         </div>
     </div>
+<!--    <div class="flex w-full my-1.5">-->
+<!--        <img-dialog/>-->
+<!--    </div>-->
   <!-- 顯示原始網址和 meta 資料 -->
   <!--  <div v-if="urlObj.meta" class="mt-4">-->
   <!--    <div>{{ urlObj.origin }}</div>-->

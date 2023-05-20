@@ -1,45 +1,73 @@
-const {appBaseUrl, apiBaseUrl} = useRuntimeConfig()
+const { appBaseUrl, apiBaseUrl } = useRuntimeConfig();
+
+interface resData {
+    code: string;
+    data: object;
+}
 
 export default {
-     getGoogleAuthUrl: () :any => {
-         return useFetch(`${apiBaseUrl}/api/ouath/google/url`,{
-             method: 'GET',
-         })
+    getGoogleAuthUrl: async (): Promise<any> => {
+        const { data, pending, error, refresh } = await useFetch(`${apiBaseUrl}/api/ouath/google/url`, {
+            method: 'GET',
+        });
+        const resData = data.value as resData;
+        return {...resData.data}
     },
-    getUserInfo: () :any => {
-        return useFetch(`${apiBaseUrl}/api/user/info`,{
+    getUserInfo: async (): Promise<any> => {
+        const { data, pending, error, refresh } = await useFetch(`${apiBaseUrl}/api/user/info`, {
             method: 'GET',
             credentials: 'include',
-        })
+        });
+        const resData = data.value as resData;
+        return {...resData.data}
     },
-    login: (code:string) :any => {
-        return useFetch(`${apiBaseUrl}/api/ouath/google/login?code=${code}`, {
+    login: async (code: string): Promise<any> => {
+        const { data, pending, error, refresh } = await useFetch(`${apiBaseUrl}/api/ouath/google/login?code=${code}`, {
             method: 'GET',
             credentials: 'include',
-        })
+        });
+        const resData = data.value as resData;
+        return {...resData.data}
     },
-    searchUrl: (keyword:string) :any => {
-        return useFetch(`${apiBaseUrl}/api/urlShorten/search?keyword=${keyword}`, {
+    searchUrl: async (keyword: string): Promise<any> => {
+        const { data, pending, error, refresh } = await useFetch(`${apiBaseUrl}/api/urlShorten/search?keyword=${keyword}`, {
             method: 'GET',
-        })
+        });
+        const resData = data.value as resData;
+        return {...resData.data}
     },
-    userSearchUrl: (userID:number,keyword:string) :any => {
-        return useFetch(`${apiBaseUrl}/api/user/${{userID}}/urlShorten/search?keyword=${keyword}`, {
+    userSearchUrl: async (userID: number, keyword: string): Promise<any> => {
+        const { data, pending, error, refresh } = await useFetch(`${apiBaseUrl}/api/user/${userID}/urlShorten/search?keyword=${keyword}`, {
             method: 'GET',
             credentials: 'include',
-        })
+        });
+        const resData = data.value as resData;
+        return {...resData.data}
     },
-    postUrl: (urlObj:object) :any => {
-        return useFetch(`${apiBaseUrl}/api/urlShorten`, {
+    postUrl: async (urlObj: object): Promise<any> => {
+        const { data, pending, error, refresh } = await useFetch(`${apiBaseUrl}/api/urlShorten`, {
             method: 'POST',
-            body:urlObj
-        })
+            body: urlObj,
+        });
+        const resData = data.value as resData;
+        return {...resData.data}
     },
-    userPostUrl: (userID:number,userUrlObj:object) :any => {
-        return useFetch(`${apiBaseUrl}/api/user/${{userID}}/urlShorten`, {
+    userPostUrl: async (userID: number, userUrlObj: object): Promise<any> => {
+        const { data, pending, error, refresh } = await useFetch(`${apiBaseUrl}/api/user/${userID}/urlShorten`, {
             method: 'POST',
-            body:userUrlObj,
+            body: userUrlObj,
             credentials: 'include',
-        })
+        });
+        const resData = data.value as resData;
+        return {...resData.data}
     },
-}
+    userPostImage: async (userID: number, imgObj: FormData): Promise<any> => {
+        const { data, pending, error, refresh } = await useFetch(`${apiBaseUrl}/api/user/${userID}/image`, {
+            method: 'POST',
+            body: imgObj,
+            credentials: 'include',
+        });
+        const resData = data.value as resData;
+        return {...resData.data}
+    },
+};

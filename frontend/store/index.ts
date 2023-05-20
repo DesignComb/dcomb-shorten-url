@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import Api from '~/utils/api';
 
 import {isValidHttpUrl} from '~/utils/verify'
@@ -7,8 +7,8 @@ import {reactive} from "vue";
 export const useMainStore = defineStore('main', {
     state: () => ({
         googleAuthUrl: '',
-        searchResult:[],
-        urlObj:{
+        searchResult: [],
+        urlObj: {
             origin: '',
             isRandom: true,
             meta: {}
@@ -18,23 +18,22 @@ export const useMainStore = defineStore('main', {
     actions: {
         async getGoogleAuthUrl() {
             const response = await Api.getGoogleAuthUrl()
-            this.googleAuthUrl = response.data.value.url
+            this.googleAuthUrl = response.url
         },
-        async searchUrl(keyword:string){
+        async searchUrl(keyword: string) {
             const response = await Api.searchUrl(keyword)
             if (response) {
                 this.searchResult = response
             }
         },
-        async postUrl(){
-            if(isValidHttpUrl(this.urlObj.origin)){
+        async postUrl() {
+            if (isValidHttpUrl(this.urlObj.origin)) {
                 const response = await Api.postUrl(this.urlObj)
-                if (response.data.value) {
-                    this.shortenUrl = response.data.value.short
+                if (response) {
+                    this.shortenUrl = response.short
                 }
-            }
-            else {
-                alert('')
+            } else {
+                alert('請輸入正確的網址格式')
             }
 
         },

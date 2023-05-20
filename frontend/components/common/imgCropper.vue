@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import 'vue-cropper/dist/index.css'
 import {VueCropper} from "vue-cropper"
-import {ref, reactive} from 'vue'
+import {ref, reactive, Ref} from 'vue'
+import {useUserStore} from '~/store/user'
+
+const user = useUserStore()
 
 let uploadedUrl = ref('')
-let selectedFile = reactive({
-    fileObj: ''
-})
+
 let loading = ref(false)
 let preview = reactive({image: ''})
+
+const cropper:Ref<any> = ref(null)
+
 
 const option = {
     img: '', // 裁剪圖片的地址
@@ -36,6 +40,9 @@ const option = {
 
 const realTime = (data: any) => {
     preview.image = data
+    cropper.value?.getCropData((img) =>{
+        user.imageObj.croppedImg = img
+    })
 }
 
 const onFileSelectEvent = (e: any) => {
@@ -52,9 +59,9 @@ const onFileSelectEvent = (e: any) => {
             // originImage.src = res;
             // this.selectedFile = originImage.outerHTML;
 
-            selectedFile.fileObj = res
-            console.log(selectedFile)
-            console.log(res)
+            user.imageObj.uploadImgData = res
+            // console.log(user.imageObj.uploadImgData)
+            // console.log(res)
             // this.$refs.cropper.replace(this.selectedFile);
         });
     } else {
@@ -78,16 +85,20 @@ const readAsDataURL = (file: any) => {
     <div class="relative">
         <!--    <img v-if="selectedFile" :src="selectedFile" width="200"  alt=""/>-->
         <input id="imageInput" ref="FileInput" class="hidden" type="file" @input="onFileSelectEvent"/>
-        <label v-if="!selectedFile.fileObj" for="imageInput"
+        <label v-if="!user.imageObj.uploadImgData" for="imageInput"
                class="absolute absolute-middle w-fit h-fit text-4xl z-50 text-teal-500
                 border rounded-full bg-gray-800 shadow-md p-4 hover:opacity-80 cursor-pointer">
             <i class="bx bx-upload"></i>
         </label>
+<!--        {{preview.image}}-->
+<!--        {{realTime}}-->
+<!--        {{user.imageObj.uploadImgData}}-->
+<!--        {{option}}-->
         <div class="cropper-container">
             <div class="cropper-el">
                 <vueCropper
                         ref="cropper"
-                        :img="selectedFile.fileObj"
+                        :img="user.imageObj.uploadImgData"
                         :output-size="option.size"
                         :output-type="option.outputType"
                         :info="true"

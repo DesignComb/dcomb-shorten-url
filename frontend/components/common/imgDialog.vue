@@ -9,6 +9,9 @@ import {
 } from '@headlessui/vue'
 import ImgCropper from "~/components/common/imgCropper.vue";
 
+import {useUserStore} from '~/store/user'
+
+const user = useUserStore()
 const isOpen = ref(false)
 
 function closeModal() {
@@ -18,15 +21,21 @@ function closeModal() {
 function openModal() {
     isOpen.value = true
 }
+
+const handleUpload = async () => {
+    await user.userPostImage()
+    await closeModal()
+}
 </script>
 <template>
+    <img class="w-full px-10" :src="user.imageObj.uploadedUrl" alt=""/>
     <div class="flex items-center justify-center">
-        <button
-                type="button"
+        <button v-if="!user.imageObj.uploadedUrl"
                 @click="openModal"
-                class="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-        >
+                class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+                type="button">
             Upload image
+                <i class="bx bx-upload pl-2"></i>
         </button>
     </div>
     <TransitionRoot appear :show="isOpen" as="template">
@@ -60,13 +69,20 @@ function openModal() {
                                 class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
                         >
                             <img-cropper/>
-                            <div class="mt-4">
+                            <div class="flex mt-4 justify-between">
+                                <button
+                                        type="button"
+                                        class="inline-flex justify-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                        @click="closeModal"
+                                >
+                                    Cancel
+                                </button>
                                 <button
                                         type="button"
                                         class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                        @click="closeModal"
+                                        @click="handleUpload"
                                 >
-                                    Got it, thanks!
+                                    Upload
                                 </button>
                             </div>
                         </DialogPanel>
