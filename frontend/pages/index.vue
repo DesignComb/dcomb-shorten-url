@@ -61,7 +61,7 @@ const response: any = reactive({data: {short: ''}})
 
 const protocol = window.location.protocol;
 const currentHost = window.location.host;
-const completeUrl = computed(() => `${protocol}//${currentHost}/${main.shortenUrl}`)
+const completeUrl = computed(() => `${protocol}//${currentHost}/${user.shortenUrl}`)
 
 
 const isCopied = ref(false)
@@ -78,14 +78,19 @@ user.getUserInfo()
 const handleUrlInputChange = () => {
     // main.searchUrl(urlObj.origin)
 }
+const handleUrlShorten = () => {
+    if (user.userInfo.user_id >　0){
+        user.userPostUrl()
+    }
+    else {
+        user.postUrl()
+    }
+}
 </script>
 
 <template>
 
     <div class="relative mx-auto max-w-sm flex flex-wrap h-screen content-center items-center">
-        <!--    <div class="absolute w-10 h-10 p-2 m-2 cursor-pointer hover:bg-gray-600 rounded-full right-0 top-0">-->
-        <!--      <i class="bx bx-user pl-1"></i>-->
-        <!--    </div>-->
         <Popover v-slot="{ open }"
                  class="absolute w-full flex flex-wrap justify-end right-0 top-0">
             <div class="w-full flex justify-end">
@@ -126,19 +131,19 @@ const handleUrlInputChange = () => {
         <form class="w-full max-w-sm">
             <div class="flex items-center border-b border-teal-500 py-2">
                 <input
-                        v-model="main.urlObj.origin"
+                        v-model="user.urlObj.origin"
                         @change="handleUrlInputChange"
                         class="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
                         type="text" placeholder="Url" aria-label="Full name">
                 <button
-                        @click="main.postUrl()"
+                        @click="handleUrlShorten"
                         class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
                         type="button">
                     Shorten
                 </button>
             </div>
         </form>
-        <div v-if="main.shortenUrl" class="w-full flex flex-wrap relative mt-4">
+        <div v-if="user.shortenUrl" class="w-full flex flex-wrap relative mt-4">
             Congratulations! Your Short Url：<br>
             <input class="flex w-full mt-1.5 px-4 py-1.5 text-black rounded"
                    ref="shortenUrl" name="shortenUrl"
@@ -151,18 +156,6 @@ const handleUrlInputChange = () => {
         </div>
         <div class="w-full pt-8">
             <Disclosure v-slot="{ open }">
-                <DisclosureButton :disabled="!main.shortenUrl"
-                                  class="flex w-full justify-between item-center px-2 py-2 rounded-t-md border-b border-teal-500 text-left text-sm font-medium text-teal-500 hover:bg-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
-                >
-                    <span>QR code</span>
-                    <i :class="open ? 'rotate-180 transform' : ''"
-                       class='bx bx-chevron-down'></i>
-                </DisclosureButton>
-                <DisclosurePanel class="pt-4 pb-2 text-sm text-gray-500 transform duration-500">
-                    <qr-controller :complete-url="completeUrl"/>
-                </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" class="mt-8" v-slot="{ open }">
                 <DisclosureButton :disabled="user.userInfo.user_id == 0"
                                   class="flex w-full justify-between item-center px-2 py-2 rounded-t-md border-b border-teal-500 text-left text-sm font-medium text-teal-500 hover:bg-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
                 >
@@ -178,11 +171,23 @@ const handleUrlInputChange = () => {
                     <label>title</label>
                     <input class="flex w-full my-1.5 px-4 py-1.5 text-black rounded"
                            placeholder="preview Title"
-                           v-model="user.urlPreview.title"/>
+                           v-model="user.urlObj.title"/>
                     <label>Description</label>
                     <textarea class="flex w-full my-1.5 px-4 py-1.5 text-black rounded"
                               rows="5" placeholder="preview Description"
-                              v-model="user.urlPreview.description"/>
+                              v-model="user.urlObj.description"/>
+                </DisclosurePanel>
+            </Disclosure>
+            <Disclosure as="div" class="mt-8"  v-slot="{ open }">
+                <DisclosureButton :disabled="!user.shortenUrl"
+                                  class="flex w-full justify-between item-center px-2 py-2 rounded-t-md border-b border-teal-500 text-left text-sm font-medium text-teal-500 hover:bg-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
+                >
+                    <span>QR code</span>
+                    <i :class="open ? 'rotate-180 transform' : ''"
+                       class='bx bx-chevron-down'></i>
+                </DisclosureButton>
+                <DisclosurePanel class="pt-4 pb-2 text-sm text-gray-500 transform duration-500">
+                    <qr-controller :complete-url="completeUrl"/>
                 </DisclosurePanel>
             </Disclosure>
         </div>

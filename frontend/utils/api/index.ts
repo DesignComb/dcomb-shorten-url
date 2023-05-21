@@ -1,4 +1,4 @@
-const { appBaseUrl, apiBaseUrl } = useRuntimeConfig();
+const { appBaseUrl, apiBaseUrl,serverApiBaseUrl } = useRuntimeConfig();
 
 interface resData {
     code: string;
@@ -19,6 +19,12 @@ export default {
             credentials: 'include',
         });
         const resData = data.value as resData;
+        return {...resData.data}
+    },
+    getRedirect: async (id:string): Promise<any> => {
+        const { data, pending, error, refresh } = await useAsyncData('id',
+            () => $fetch(`${serverApiBaseUrl}/api/r/${id}`))
+        const resData = data.value as resData
         return {...resData.data}
     },
     login: async (code: string): Promise<any> => {
