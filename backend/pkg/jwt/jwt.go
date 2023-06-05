@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"errors"
+	"fmt"
 	jwt "github.com/dgrijalva/jwt-go"
 	"main/config"
 	"time"
@@ -24,6 +25,10 @@ type Claims struct {
 func GenerateToken(userId, googleUserId, email, name, picture string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(time.Duration(config.Val.JWTTokenLife) * time.Second) // Token有效時間
+	fmt.Println("expireTime", expireTime)
+	fmt.Println("expireTime.Unix()", expireTime.Unix())
+	fmt.Println("nowTime", nowTime)
+	fmt.Println("config.Val.JWTTokenLife", config.Val.JWTTokenLife)
 
 	claims := Claims{
 		userId,
