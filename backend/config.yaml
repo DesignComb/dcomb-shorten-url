@@ -1,17 +1,11 @@
 MODE: "debug"
-#Port: 5000
-#DbHost: db
+Port: 5000
+DbHost: db
 DbUser: user
 DbPwd: mysecretpassword
 DbName: postgres
 
-GoogleClientID:
-GoogleSecretKey:
+#Port: 3001
+#DbHost: localhost
 
-JWT_TOKEN_LIFE: 2592000
-JWT_SECRET:
-
-Port: 3001
-DbHost: localhost
-
-Host: "http://localhost:8001"
+Host: "https://dco.tw"
