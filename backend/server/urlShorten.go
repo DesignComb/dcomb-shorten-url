@@ -25,7 +25,10 @@ func redirect(c *gin.Context) {
 	}
 
 	res.Success(c, gin.H{
-		"origin": url.Origin,
+		"origin":      url.Origin,
+		"title":       url.Title,
+		"description": url.Description,
+		"image_id":    url.ImageId,
 	})
 }
 
