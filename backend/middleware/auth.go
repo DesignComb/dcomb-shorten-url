@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"main/pkg/jwt"
 	"main/pkg/res"
@@ -13,20 +12,13 @@ func Auth() gin.HandlerFunc {
 		// 取得token
 		token, err := c.Cookie(jwt.Key)
 		if err != nil {
-			fmt.Println(123)
 			res.Unauthorized(c, nil, "not logged in")
 			c.Abort()
 			return
 		}
 		// 解析token 取得會員的資料
 		userId, googleUserId, email, name, picture, err := jwt.ParseToken(token)
-		fmt.Println(err)
-		fmt.Println(googleUserId)
-		fmt.Println(email)
-		fmt.Println(name)
-		fmt.Println(picture)
 		if err != nil || userId == "" || googleUserId == "" || email == "" || name == "" || picture == "" {
-			fmt.Println(456)
 			res.Unauthorized(c, nil, "not logged in")
 			c.Abort()
 			return
