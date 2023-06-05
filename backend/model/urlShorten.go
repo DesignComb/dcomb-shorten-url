@@ -11,6 +11,18 @@ func GetAllUrlShorten() ([]UrlShorten, error) {
 	return urlShorten, nil
 }
 
+func GetUserAllUrlShorten(userId uint64) ([]UrlShorten, error) {
+	var urlShorten []UrlShorten
+
+	tx := db.Where("user_id = ?", userId).Find(&urlShorten)
+
+	if tx.Error != nil {
+		return []UrlShorten{}, tx.Error
+	}
+
+	return urlShorten, nil
+}
+
 func GetUserUrlShorten(id uint64, userId uint64) (UrlShorten, error) {
 	var urlShorten UrlShorten
 	tx := db.Where("id = ? AND user_id = ?", id, userId).First(&urlShorten)

@@ -42,6 +42,7 @@ func SetupAndListen() {
 	// user
 	userApi := api.Use(middleware.Auth())
 	userApi.GET("/user/info", GetUserInfo)
+	userApi.GET("/user/urlShorten", GetUserUrlShorten)
 
 	// user short url
 	userUrlShortenApi := api.Use(middleware.Auth())
