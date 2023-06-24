@@ -269,7 +269,8 @@ func getMetadata(c *gin.Context) {
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(html)))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing HTML"})
+		res.SystemError(c, nil, "Error parsing HTML")
+		c.Abort()
 		return
 	}
 	title := doc.Find("title").Text()
