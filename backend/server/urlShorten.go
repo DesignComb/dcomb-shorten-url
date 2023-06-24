@@ -2,12 +2,15 @@ package server
 
 import (
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"main/model"
 	"main/pkg/res"
 	"main/utils"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func redirect(c *gin.Context) {
@@ -250,4 +253,50 @@ func searchNonUserUrlShorten(c *gin.Context) {
 	}
 	url := model.SearchNonUserUrlShorten(keyword)
 	res.Success(c, url)
+}
+
+func getMetadata(c *gin.Context) {
+	url := c.Query("url")
+	if len(url) < 1 {
+		res.BadRequest(c, nil, "url is required")
+		c.Abort()
+		return
+	}
+
+	urlRes, err := http.Get(url)
+	defer urlRes.Body.Close()
+	html, err := ioutil.ReadAll(urlRes.Body)
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(html)))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing HTML"})
+		return
+	}
+	title := doc.Find("title").Text()
+	description := ""
+	ogTitle := ""
+	ogDescription := ""
+	ogImage := ""
+	doc.Find("meta").Each(func(i int, s *goquery.Selection) {
+		if hid, _ := s.Attr("data-hid"); hid == "description" {
+			description, _ = s.Attr("content")
+		}
+		if hid, _ := s.Attr("data-hid"); hid == "og:title" {
+			ogTitle, _ = s.Attr("content")
+		}
+		if hid, _ := s.Attr("data-hid"); hid == "og:description" {
+			ogDescription, _ = s.Attr("content")
+		}
+		if hid, _ := s.Attr("data-hid"); hid == "og:image" {
+			ogImage, _ = s.Attr("content")
+		}
+	})
+
+	res.Success(c, gin.H{
+		"title":          title,
+		"description":    description,
+		"og:title":       ogTitle,
+		"og:description": ogDescription,
+		"og:image":       ogImage,
+	})
 }

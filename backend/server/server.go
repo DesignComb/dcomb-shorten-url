@@ -36,6 +36,7 @@ func SetupAndListen() {
 	api.GET("/urlShorten/origin", getUrlShortenFromOrigin)
 	api.POST("/urlShorten", createUrlShorten)
 	api.GET("/urlShorten/search", searchNonUserUrlShorten)
+	api.GET("/metadata", getMetadata)
 	//api.Patch("/urlShorten", updateUrlShorten)
 	//api.Delete("/urlShorten/:id", deleteUrlShorten)
 
