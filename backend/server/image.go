@@ -90,3 +90,37 @@ func UploadImage(c *gin.Context) {
 		"url":    s3ReadUrl + image.Uri,
 	})
 }
+
+func GetImage(c *gin.Context) {
+	// 驗證user
+	userId := c.Param("userId")
+	imageId, _ := strconv.ParseUint(c.Param("imageId"), 10, 64)
+	var loginUserId uint64
+	if len(userId) > 0 {
+		value, exists := c.Get("user_id")
+		if value != userId {
+			res.Unauthorized(c, nil, "no permission")
+			c.Abort()
+			return
+		}
+		if exists {
+			str, ok := value.(string)
+			if ok {
+				loginUserId, _ = strconv.ParseUint(str, 10, 64)
+			}
+		}
+	}
+
+	image, _ := model.FindImage(imageId)
+	if image.UserId != loginUserId {
+		res.Unauthorized(c, nil, "no permission")
+		c.Abort()
+		return
+	}
+
+	res.Success(c, gin.H{
+		"id":     image.ID,
+		"userId": image.UserId,
+		"url":    s3ReadUrl + image.Uri,
+	})
+}

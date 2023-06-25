@@ -30,7 +30,7 @@ func SetupAndListen() {
 	api.GET("ouath/google/url", access)
 	api.GET("ouath/google/login", login)
 
-	// short url
+	//region short url
 	api.GET("/r/:redirect", redirect)
 	//api.Get("/urlShorten", getAllUrlShorten)
 	api.GET("/urlShorten/origin", getUrlShortenFromOrigin)
@@ -40,11 +40,6 @@ func SetupAndListen() {
 	//api.Patch("/urlShorten", updateUrlShorten)
 	//api.Delete("/urlShorten/:id", deleteUrlShorten)
 
-	// user
-	userApi := api.Use(middleware.Auth())
-	userApi.GET("/user/info", GetUserInfo)
-	userApi.GET("/user/urlShorten", GetUserUrlShorten)
-
 	// user short url
 	userUrlShortenApi := api.Use(middleware.Auth())
 	userUrlShortenApi.POST("/user/:userId/urlShorten", createUrlShorten)
@@ -52,12 +47,27 @@ func SetupAndListen() {
 	userUrlShortenApi.GET("/urlShorten/:id", getUserUrlShorten)
 	userUrlShortenApi.GET("/user/:userId/urlShorten/search", searchUserUrlShorten)
 
-	// user image
-	userImageApi := api.Use(middleware.Auth())
-	userImageApi.POST("/user/:userId/image", UploadImage)
+	//endregion
+
+	//region link tree
+
+
+
+
+	//endregion
 
 	// google login
 	//router.POST("/api/google/login", login)
+
+	// user
+	userApi := api.Use(middleware.Auth())
+	userApi.GET("/user/info", GetUserInfo)
+	userApi.GET("/user/urlShorten", GetUserUrlShorten)
+
+	// user image
+	userImageApi := api.Use(middleware.Auth())
+	userImageApi.POST("/user/:userId/image", UploadImage)
+	userImageApi.GET("/user/:userId/image/:imageId", GetImage)
 
 	// log
 	router.Use(gin.Logger())
