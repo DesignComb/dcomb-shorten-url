@@ -52,14 +52,16 @@ type Tree struct {
 }
 
 type Link struct {
-	ID         uint64 `json:"id" gorm:"primaryKey"`
-	TreeId     uint64 `json:"treeId" gorm:"not null"`
-	PlatformId uint64 `json:"platformId" gorm:"not null"`
-	Link       string `json:"link" gorm:"not null"`
-	UserId     uint64 `json:"userId" gorm:"not null"`
-	ImageId    uint64 `json:"imageId" gorm:"default:null"`
-	Sort       uint64 `json:"sort" gorm:"not null"`
-	IsOnlyIcon bool   `json:"isOnlyIcon" gorm:"default:false;not null"`
+	ID          uint64 `json:"id" gorm:"primaryKey"`
+	TreeId      uint64 `json:"treeId" gorm:"not null"`
+	PlatformId  uint64 `json:"platformId" gorm:"not null"`
+	Link        string `json:"link" gorm:"not null"`
+	Title       string `json:"title" gorm:"not null"`
+	Description string `json:"description" gorm:"default:null"`
+	UserId      uint64 `json:"userId" gorm:"not null"`
+	ImageId     uint64 `json:"imageId" gorm:"default:null"`
+	Sort        uint64 `json:"sort" gorm:"not null"`
+	IsOnlyIcon  bool   `json:"isOnlyIcon" gorm:"default:false;not null"`
 }
 
 func Setup() {

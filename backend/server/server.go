@@ -39,21 +39,23 @@ func SetupAndListen() {
 	api.GET("/metadata", getMetadata)
 	//api.Patch("/urlShorten", updateUrlShorten)
 	//api.Delete("/urlShorten/:id", deleteUrlShorten)
+	//endregion
 
-	// user short url
+	//region link tree
+	api.GET("/linkTree/:treeId", getTree)
+	//endregion
+
+	//region user short url
 	userUrlShortenApi := api.Use(middleware.Auth())
 	userUrlShortenApi.POST("/user/:userId/urlShorten", createUrlShorten)
 	userUrlShortenApi.GET("/user/:userId/urlShorten/origin", getUserUrlShortenFromOrigin)
 	userUrlShortenApi.GET("/urlShorten/:id", getUserUrlShorten)
 	userUrlShortenApi.GET("/user/:userId/urlShorten/search", searchUserUrlShorten)
-
 	//endregion
 
-	//region link tree
-
-
-
-
+	//region user link tree
+	//userTreeApi := api.Use(middleware.Auth())
+	//userTreeApi.POST("/user/:userId/linkTree", createLinkTree)
 	//endregion
 
 	// google login

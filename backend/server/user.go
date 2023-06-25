@@ -78,7 +78,7 @@ func GetUserUrlShorten(c *gin.Context) {
 	loginUserId, _ := strconv.ParseUint(userId, 10, 64)
 	urls, err := model.GetUserAllUrlShorten(loginUserId)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error getting all goly links " + err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error getting all links " + err.Error()})
 		return
 	}
 
