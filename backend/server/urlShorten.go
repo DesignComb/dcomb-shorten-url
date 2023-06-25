@@ -26,12 +26,17 @@ func redirect(c *gin.Context) {
 	if err != nil {
 		fmt.Printf("error updating: %v\n", err)
 	}
+	imageUrl := ""
+	if url.ImageId > 0 {
+		image, _ := model.FindImage(url.ImageId)
+		imageUrl = s3ReadUrl + image.Uri
+	}
 
 	res.Success(c, gin.H{
 		"origin":      url.Origin,
 		"title":       url.Title,
 		"description": url.Description,
-		"image_id":    url.ImageId,
+		"image":       imageUrl,
 	})
 }
 
