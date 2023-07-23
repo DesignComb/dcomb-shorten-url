@@ -60,50 +60,24 @@ func getTree(c *gin.Context) {
 }
 
 func createLinkTree(c *gin.Context) {
-	//var urlShorten model.UrlShorten
-	//err := c.ShouldBindJSON(&urlShorten)
-	//if err != nil {
-	//	c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error parsing JSON " + err.Error()})
-	//	return
-	//}
-	//
-	//if len(urlShorten.Origin) == 0 {
-	//	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "origin column is required"})
-	//	return
-	//}
-	//
-	//if urlShorten.Random {
-	//	urlShorten.Short = utils.RandomURL(8)
-	//} else {
-	//	if len(urlShorten.Short) == 0 {
-	//		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "short column is required"})
-	//		return
-	//	}
-	//}
-	//
-	//// logged in user
-	//userId := c.Param("userId")
-	//if len(userId) > 0 {
-	//	loginUserId, _ := c.Get("user_id")
-	//	if loginUserId != userId {
-	//		res.Unauthorized(c, nil, "no permission")
-	//		c.Abort()
-	//		return
-	//	}
-	//	urlShorten.UserId, _ = strconv.ParseUint(userId, 10, 64)
-	//	// todo：imageId 不存在或不屬於此user
-	//} else {
-	//	// 非會員無法加title等
-	//	urlShorten.Title = ""
-	//	urlShorten.Description = ""
-	//	urlShorten.ImageId = 0
-	//}
-	//
-	//urlShorten, err = model.CreateUrlShorten(urlShorten)
-	//if err != nil {
-	//	c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not create urlShorten in db " + err.Error()})
-	//	return
-	//}
-	//
-	//res.Success(c, urlShorten)
+	var tree model.Tree
+	err := c.ShouldBindJSON(&tree)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error parsing JSON " + err.Error()})
+		return
+	}
+
+	// logged in user
+	loginUserId, _ := c.Get("user_id")
+	if loginUserId, ok := loginUserId.(string); ok {
+		tree.UserId, _ = strconv.ParseUint(loginUserId, 10, 64)
+	}
+
+	tree, err = model.CreateTree(tree)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not create tree in db " + err.Error()})
+		return
+	}
+
+	res.Success(c, tree)
 }

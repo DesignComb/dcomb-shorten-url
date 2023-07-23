@@ -5,3 +5,8 @@ func FindTree(id uint64) (Tree, error) {
 	tx := db.First(&tree, id)
 	return tree, tx.Error
 }
+
+func CreateTree(tree Tree) (Tree, error) {
+	tx := db.Create(&tree)
+	return tree, tx.Error
+}

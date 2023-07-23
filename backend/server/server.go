@@ -43,6 +43,8 @@ func SetupAndListen() {
 
 	//region link tree
 	api.GET("/linkTree/:treeId", getTree)
+	lineTreeApi := api.Use(middleware.Auth())
+	lineTreeApi.POST("linkTree", createLinkTree)
 	//endregion
 
 	//region user short url
