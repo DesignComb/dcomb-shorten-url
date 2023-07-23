@@ -10,3 +10,8 @@ func CreateTree(tree Tree) (Tree, error) {
 	tx := db.Create(&tree)
 	return tree, tx.Error
 }
+
+func UpdateTree(tree Tree) error {
+	tx := db.Save(&tree)
+	return tx.Error
+}

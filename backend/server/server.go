@@ -45,6 +45,7 @@ func SetupAndListen() {
 	api.GET("/linkTree/:treeId", getTree)
 	lineTreeApi := api.Use(middleware.Auth())
 	lineTreeApi.POST("linkTree", createLinkTree)
+	lineTreeApi.PUT("linkTree/:treeId", updateLinkTree)
 	//endregion
 
 	//region user short url

@@ -81,3 +81,40 @@ func createLinkTree(c *gin.Context) {
 
 	res.Success(c, tree)
 }
+
+func updateLinkTree(c *gin.Context) {
+	var updateTree model.Tree
+
+	// todo: 有傳的欄位才更新，目前會把沒傳的清空
+	err := c.ShouldBindJSON(&updateTree)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not parse json " + err.Error()})
+		return
+	}
+
+	// logged in user
+	loginUserId, _ := c.Get("user_id")
+	if loginUserId, ok := loginUserId.(string); ok {
+		updateTree.UserId, _ = strconv.ParseUint(loginUserId, 10, 64)
+	}
+
+	treeId, err := strconv.ParseUint(c.Param("treeId"), 10, 64)
+	tree, err := model.FindTree(treeId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not find tree in DB " + err.Error()})
+		return
+	}
+	updateTree.ID = tree.ID
+	if updateTree.UserId != tree.UserId {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "no permission"})
+		return
+	}
+
+	err = model.UpdateTree(updateTree)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not update link tree in DB " + err.Error()})
+		return
+	}
+
+	res.Success(c, updateTree)
+}
