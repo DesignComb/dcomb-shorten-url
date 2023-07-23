@@ -118,3 +118,34 @@ func updateLinkTree(c *gin.Context) {
 
 	res.Success(c, updateTree)
 }
+
+func deleteLinkTree(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("treeId"), 10, 64)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not parse treeId from url " + err.Error()})
+		return
+	}
+
+	treeId, err := strconv.ParseUint(c.Param("treeId"), 10, 64)
+	tree, err := model.FindTree(treeId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not find tree in DB. " + err.Error()})
+		return
+	}
+
+	// logged in user
+	loginUserId, _ := c.Get("user_id")
+	loginUserId, _  = strconv.ParseUint(fmt.Sprintf("%v", loginUserId), 10, 64)
+	if loginUserId != tree.UserId {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "no permission"})
+		return
+	}
+
+	err = model.DeleteTree(id)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not delete from db " + err.Error()})
+		return
+	}
+
+	res.Success(c, nil)
+}

@@ -15,3 +15,8 @@ func UpdateTree(tree Tree) error {
 	tx := db.Save(&tree)
 	return tx.Error
 }
+
+func DeleteTree(id uint64) error {
+	tx := db.Unscoped().Delete(&Tree{}, id)
+	return tx.Error
+}
