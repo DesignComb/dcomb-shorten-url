@@ -48,7 +48,6 @@ func getTree(c *gin.Context) {
 			"sort":        link.Sort,
 			"isOnlyIcon":  link.IsOnlyIcon,
 		}
-		fmt.Println(processedLink)
 		processedLinks = append(processedLinks, processedLink)
 	}
 	res.Success(c, gin.H{
@@ -59,9 +58,17 @@ func getTree(c *gin.Context) {
 	})
 }
 
+type RequestData struct {
+	Title       string       `json:"title"`
+	ImageID     uint64       `json:"imageId"`
+	Description string       `json:"description"`
+	LinkTree    []model.Link `json:"linkTree"`
+}
+
 func createLinkTree(c *gin.Context) {
+	var requestData RequestData
 	var tree model.Tree
-	err := c.ShouldBindJSON(&tree)
+	err := c.ShouldBindJSON(&requestData)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error parsing JSON " + err.Error()})
 		return
@@ -72,21 +79,39 @@ func createLinkTree(c *gin.Context) {
 	if loginUserId, ok := loginUserId.(string); ok {
 		tree.UserId, _ = strconv.ParseUint(loginUserId, 10, 64)
 	}
+	tree.Title = requestData.Title
+	tree.Description = requestData.Description
+	tree.ImageId = requestData.ImageID
 
+	// todo：db transaction
+	// todo：foreign key constraint
 	tree, err = model.CreateTree(tree)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not create tree in db " + err.Error()})
 		return
 	}
 
-	res.Success(c, tree)
+	links, err := model.CreateLinks(requestData.LinkTree)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not create links in db " + err.Error()})
+		return
+	}
+
+	res.Success(c, gin.H{
+		"id":          tree.ID,
+		"title":       tree.Title,
+		"description": tree.Description,
+		"imageId":     tree.ImageId,
+		"linkTree":    links,
+	})
 }
 
 func updateLinkTree(c *gin.Context) {
+	var requestData RequestData
 	var updateTree model.Tree
 
 	// todo: 有傳的欄位才更新，目前會把沒傳的清空
-	err := c.ShouldBindJSON(&updateTree)
+	err := c.ShouldBindJSON(&requestData)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not parse json " + err.Error()})
 		return
@@ -105,6 +130,9 @@ func updateLinkTree(c *gin.Context) {
 		return
 	}
 	updateTree.ID = tree.ID
+	updateTree.Title = requestData.Title
+	updateTree.Description = requestData.Description
+	updateTree.ImageId = requestData.ImageID
 	if updateTree.UserId != tree.UserId {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "no permission"})
 		return
@@ -116,7 +144,25 @@ func updateLinkTree(c *gin.Context) {
 		return
 	}
 
-	res.Success(c, updateTree)
+	err = model.DeleteTreeLinks(treeId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not delete links in db " + err.Error()})
+		return
+	}
+
+	links, err := model.CreateLinks(requestData.LinkTree)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "could not create links in db " + err.Error()})
+		return
+	}
+
+	res.Success(c, gin.H{
+		"id":          tree.ID,
+		"title":       tree.Title,
+		"description": tree.Description,
+		"imageId":     tree.ImageId,
+		"linkTree":    links,
+	})
 }
 
 func deleteLinkTree(c *gin.Context) {
