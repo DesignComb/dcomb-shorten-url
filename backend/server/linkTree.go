@@ -18,7 +18,7 @@ func getTree(c *gin.Context) {
 
 	tree, err := model.FindTree(treeId)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "error could not retrieve tree from db " + err.Error()})
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "error could not retrieve tree from db " + err.Error()})
 		return
 	}
 	links, err := model.GetTreeAllLink(treeId)
